@@ -1,5 +1,5 @@
 import { confirmAction } from "../components/modal.js";
-import { clearConfig, exportJsonFile, loadAllConfigs, parseJsonFile, saveConfig } from "./storage.js";
+import { parseJsonFile } from "./storage.js";
 import { escapeHtml, uuid } from "./ui.js";
 
 const state = {
@@ -8,13 +8,52 @@ const state = {
   templates: [],
   editModuleId: null,
   editRoleId: null,
-  editTemplateId: null
+  editTemplateId: null,
+  dirty: false
 };
 
 const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
 
 function mapById(list) {
   return new Map(list.map((item) => [item.id, item]));
+}
+
+function status(message) {
+  const el = document.getElementById("fileSyncStatus");
+  if (el) el.textContent = message;
+}
+
+function setDirty(value) {
+  state.dirty = value;
+  status(value ? "Unsaved changes pending. Click Save to Local JSON Files." : "No unsaved changes.");
+}
+
+async function loadFromServer() {
+  const res = await fetch("./api/config.php", { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load server JSON config.");
+  const data = await res.json();
+  state.modules = Array.isArray(data.modules) ? data.modules : [];
+  state.roles = Array.isArray(data.roles) ? data.roles : [];
+  state.templates = Array.isArray(data.templates) ? data.templates : [];
+  setDirty(false);
+}
+
+async function saveToServer() {
+  const payload = {
+    modules: state.modules,
+    roles: state.roles,
+    templates: state.templates
+  };
+  const res = await fetch("./api/config.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok || !json.ok) {
+    throw new Error(json.error || "Failed to save JSON files.");
+  }
+  setDirty(false);
 }
 
 function renderModuleRows() {
@@ -187,6 +226,11 @@ function rerenderAll() {
   renderTemplateRows();
 }
 
+function onStateChanged() {
+  rerenderAll();
+  setDirty(true);
+}
+
 function wireForms() {
   document.getElementById("moduleForm").addEventListener("submit", (event) => {
     event.preventDefault();
@@ -204,7 +248,7 @@ function wireForms() {
     }
     state.editModuleId = null;
     form.classList.add("hidden");
-    rerenderAll();
+    onStateChanged();
   });
 
   document.getElementById("roleForm").addEventListener("submit", (event) => {
@@ -223,7 +267,7 @@ function wireForms() {
     }
     state.editRoleId = null;
     form.classList.add("hidden");
-    rerenderAll();
+    onStateChanged();
   });
 
   document.getElementById("templateForm").addEventListener("submit", (event) => {
@@ -251,11 +295,36 @@ function wireForms() {
     }
     state.editTemplateId = null;
     form.classList.add("hidden");
-    rerenderAll();
+    onStateChanged();
   });
 }
 
 function wireGlobalActions() {
+  document.getElementById("saveToFilesBtn").addEventListener("click", async () => {
+    try {
+      await saveToServer();
+      alert("Saved to /data JSON files.");
+    } catch (error) {
+      alert(`Save failed: ${error.message}`);
+    }
+  });
+
+  document.getElementById("reloadFromDiskBtn").addEventListener("click", async () => {
+    const ok = await confirmAction({
+      title: "Reload from Disk",
+      message: state.dirty
+        ? "Discard unsaved editor changes and reload JSON files from disk?"
+        : "Reload JSON files from disk?"
+    });
+    if (!ok) return;
+    try {
+      await loadFromServer();
+      rerenderAll();
+    } catch (error) {
+      alert(`Reload failed: ${error.message}`);
+    }
+  });
+
   document.getElementById("newModuleBtn").addEventListener("click", () => openModuleForm());
   document.getElementById("newRoleBtn").addEventListener("click", () => openRoleForm());
   document.getElementById("newTemplateBtn").addEventListener("click", () => openTemplateForm());
@@ -290,7 +359,7 @@ function wireGlobalActions() {
         delete clone.weights[id];
         return clone;
       });
-      rerenderAll();
+      onStateChanged();
     }
 
     if (action === "delete-role") {
@@ -298,66 +367,31 @@ function wireGlobalActions() {
       if (!ok) return;
       state.roles = state.roles.filter((entry) => entry.id !== id);
       state.templates = state.templates.filter((entry) => entry.roleId !== id);
-      rerenderAll();
+      onStateChanged();
     }
 
     if (action === "delete-template") {
       const ok = await confirmAction({ message: "Delete this template?" });
       if (!ok) return;
       state.templates = state.templates.filter((entry) => entry.id !== id);
-      rerenderAll();
+      onStateChanged();
     }
-  });
-
-  document.getElementById("saveAllBtn").addEventListener("click", () => {
-    saveConfig("modules", state.modules);
-    saveConfig("roles", state.roles);
-    saveConfig("templates", state.templates);
-    alert("Configuration saved in localStorage overrides.");
-  });
-
-  document.getElementById("exportAllBtn").addEventListener("click", () => {
-    exportJsonFile("modules.json", state.modules);
-    exportJsonFile("roles.json", state.roles);
-    exportJsonFile("templates.json", state.templates);
-  });
-
-  document.getElementById("resetAllBtn").addEventListener("click", async () => {
-    const ok = await confirmAction({
-      title: "Reset Configuration",
-      message: "This removes local overrides and reloads bundled JSON files."
-    });
-    if (!ok) return;
-    clearConfig("modules");
-    clearConfig("roles");
-    clearConfig("templates");
-    window.location.reload();
-  });
-
-  document.getElementById("exportModulesBtn").addEventListener("click", () => {
-    exportJsonFile("modules.json", state.modules);
-  });
-  document.getElementById("exportRolesBtn").addEventListener("click", () => {
-    exportJsonFile("roles.json", state.roles);
-  });
-  document.getElementById("exportTemplatesBtn").addEventListener("click", () => {
-    exportJsonFile("templates.json", state.templates);
   });
 
   bindImport("importModules", (parsed) => {
     if (!Array.isArray(parsed)) throw new Error("modules.json must be an array.");
     state.modules = parsed;
-    rerenderAll();
+    onStateChanged();
   });
   bindImport("importRoles", (parsed) => {
     if (!Array.isArray(parsed)) throw new Error("roles.json must be an array.");
     state.roles = parsed;
-    rerenderAll();
+    onStateChanged();
   });
   bindImport("importTemplates", (parsed) => {
     if (!Array.isArray(parsed)) throw new Error("templates.json must be an array.");
     state.templates = parsed;
-    rerenderAll();
+    onStateChanged();
   });
 }
 
@@ -369,7 +403,7 @@ function bindImport(id, onSuccess) {
     try {
       const parsed = await parseJsonFile(file);
       onSuccess(parsed);
-      alert(`${file.name} imported successfully.`);
+      alert(`${file.name} imported into editor. Click Save to persist.`);
     } catch (error) {
       alert(`Import failed: ${error.message}`);
     } finally {
@@ -387,10 +421,7 @@ async function init() {
   }
   content.classList.remove("hidden");
 
-  const { modules, roles, templates } = await loadAllConfigs();
-  state.modules = modules;
-  state.roles = roles;
-  state.templates = templates;
+  await loadFromServer();
   rerenderAll();
   wireForms();
   wireGlobalActions();

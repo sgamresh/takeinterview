@@ -33,15 +33,15 @@
         <div class="panel-head">
           <h2>Data Controls</h2>
           <div class="row gap">
-            <button id="saveAllBtn" class="btn btn-primary">Save Local Overrides</button>
-            <button id="exportAllBtn" class="btn btn-secondary">Export All JSON</button>
-            <button id="resetAllBtn" class="btn btn-ghost">Reset to Bundled Data</button>
+            <button id="saveToFilesBtn" class="btn btn-primary">Save to Local JSON Files</button>
+            <button id="reloadFromDiskBtn" class="btn btn-ghost">Reload from Disk</button>
           </div>
         </div>
         <p class="muted">
-          Browser apps cannot write directly to project files. Use Export/Import to sync
-          <code>/data/*.json</code>.
+          Changes are saved via local PHP endpoint directly into
+          <code>/data/modules.json</code>, <code>/data/roles.json</code>, and <code>/data/templates.json</code>.
         </p>
+        <p id="fileSyncStatus" class="muted">No unsaved changes.</p>
       </section>
 
       <section class="panel">
@@ -53,7 +53,6 @@
               Import Modules JSON
               <input id="importModules" type="file" accept="application/json" hidden />
             </label>
-            <button id="exportModulesBtn" class="btn btn-ghost">Export Modules JSON</button>
           </div>
         </div>
         <form id="moduleForm" class="inline-form hidden"></form>
@@ -81,7 +80,6 @@
               Import Roles JSON
               <input id="importRoles" type="file" accept="application/json" hidden />
             </label>
-            <button id="exportRolesBtn" class="btn btn-ghost">Export Roles JSON</button>
           </div>
         </div>
         <form id="roleForm" class="inline-form hidden"></form>
@@ -109,7 +107,6 @@
               Import Templates JSON
               <input id="importTemplates" type="file" accept="application/json" hidden />
             </label>
-            <button id="exportTemplatesBtn" class="btn btn-ghost">Export Templates JSON</button>
           </div>
         </div>
         <form id="templateForm" class="inline-form hidden"></form>

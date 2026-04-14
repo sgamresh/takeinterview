@@ -28,21 +28,36 @@
         <div class="row gap">
           <a class="btn btn-primary" href="./evaluate.html">Start New</a>
           <button id="resumeDraftBtn" class="btn btn-secondary">Resume Draft</button>
+          <select id="companyExportSelect" class="input" style="min-width: 200px;">
+            <option value="">Select company</option>
+          </select>
+          <button id="exportCompanyBtn" class="btn btn-ghost">Export Company JSON</button>
+          <label class="btn btn-ghost file-label">
+            Import Candidate JSON
+            <input id="importCandidateFile" type="file" accept="application/json" hidden />
+          </label>
         </div>
       </div>
       <p id="draftStatus" class="muted"></p>
+      <p id="importStatus" class="muted"></p>
     </section>
 
     <section class="panel">
       <div class="panel-head">
         <h2>Past Evaluations</h2>
-        <input id="searchInput" class="input" placeholder="Search by name, email, role..." />
+        <div class="row gap">
+          <input id="searchInput" class="input" placeholder="Search by name, email, company, role..." />
+          <select id="companyFilter" class="input" style="min-width: 200px;">
+            <option value="">All companies</option>
+          </select>
+        </div>
       </div>
       <div class="table-wrap">
         <table class="table">
           <thead>
             <tr>
               <th>Candidate</th>
+              <th>Company</th>
               <th>Role</th>
               <th>Date</th>
               <th>Score</th>

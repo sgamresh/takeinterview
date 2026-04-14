@@ -1,21 +1,41 @@
 [
-  {
-    "id": "sdet",
-    "name": "SDET",
-    "modules": [
-      "problem_solving",
-      "api_testing",
-      "automation",
-      "communication"
-    ]
-  },
-  {
-    "id": "qa_analyst",
-    "name": "QA Analyst",
-    "modules": [
-      "problem_solving",
-      "api_testing",
-      "communication"
-    ]
-  }
+    {
+        "id": "sdet",
+        "name": "SDET",
+        "modules": [
+            "problem_solving",
+            "api_testing",
+            "automation",
+            "communication",
+            "appium",
+            "selenium",
+            "manual",
+            "cicd",
+            "api_automation"
+        ]
+    },
+    {
+        "id": "manual_tester",
+        "name": "Manual Tester",
+        "modules": [
+            "problem_solving",
+            "communication",
+            "manual"
+        ]
+    },
+    {
+        "id": "lead",
+        "name": "Lead",
+        "modules": [
+            "problem_solving",
+            "api_testing",
+            "automation",
+            "communication",
+            "appium",
+            "selenium",
+            "manual",
+            "cicd",
+            "api_automation"
+        ]
+    }
 ]

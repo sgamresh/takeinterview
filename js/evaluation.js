@@ -1,7 +1,11 @@
 import {
+  clearImportPayload,
   clearDraft,
   cloneEvaluationPayload,
+  findDuplicateEvaluation,
   getDraft,
+  getEvaluationById,
+  getImportPayload,
   loadAllConfigs,
   setDraft,
   upsertEvaluation
@@ -20,7 +24,8 @@ const state = {
   modules: [],
   roles: [],
   templates: [],
-  moduleMap: new Map()
+  moduleMap: new Map(),
+  editingEvaluationId: null
 };
 
 const els = {
@@ -150,7 +155,7 @@ function collectPayload() {
   return {
     errors: [],
     payload: {
-      id: uuid("eval"),
+      id: state.editingEvaluationId || uuid("eval"),
       candidate,
       roleId: role.id,
       roleName: role.name,
@@ -190,8 +195,30 @@ async function init() {
 
   const url = new URL(window.location.href);
   const cloneId = url.searchParams.get("clone");
+  const reevalId = url.searchParams.get("reeval");
   const cloneData = cloneId ? cloneEvaluationPayload(cloneId) : null;
-  const draft = cloneData || getDraft();
+  const reevalSource = reevalId ? getEvaluationById(reevalId) : null;
+  const reevalData = reevalSource
+    ? {
+        candidate: {
+          ...reevalSource.candidate,
+          interviewDate: new Date().toISOString().slice(0, 10)
+        },
+        roleId: reevalSource.roleId,
+        templateId: reevalSource.templateId,
+        moduleInputs: reevalSource.modules.map((item) => ({
+          moduleId: item.id,
+          rating: item.rating,
+          notes: item.notes
+        }))
+      }
+    : null;
+  const importedPayload = getImportPayload();
+  if (importedPayload) clearImportPayload();
+  const draft = reevalData || cloneData || importedPayload || getDraft();
+  if (reevalSource) {
+    state.editingEvaluationId = reevalSource.id;
+  }
   const initialCandidate = draft?.candidate || { interviewDate: new Date().toISOString().slice(0, 10) };
 
   renderCandidateForm(els.form, roles, initialCandidate);
@@ -228,6 +255,18 @@ async function init() {
   els.submitBtn.addEventListener("click", () => {
     const { errors, payload } = collectPayload();
     if (errors.length) return;
+    const duplicate = findDuplicateEvaluation({
+      email: payload.candidate.email,
+      roleId: payload.roleId,
+      companyName: payload.candidate.companyName,
+      excludeId: payload.id
+    });
+    if (duplicate) {
+      showErrors(document.getElementById("candidateErrors"), [
+        "Duplicate evaluation is not allowed for same Email + Role + Company. Use Re-evaluate on existing record."
+      ]);
+      return;
+    }
     upsertEvaluation(payload);
     clearDraft();
     window.location.href = `./report.html?id=${encodeURIComponent(payload.id)}`;
