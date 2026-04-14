@@ -1,0 +1,34 @@
+[
+  {
+    "id": "sdet_l2",
+    "roleId": "sdet",
+    "name": "SDET Level 2",
+    "weights": {
+      "problem_solving": 30,
+      "api_testing": 30,
+      "automation": 30,
+      "communication": 10
+    }
+  },
+  {
+    "id": "sdet_l3",
+    "roleId": "sdet",
+    "name": "SDET Level 3",
+    "weights": {
+      "problem_solving": 25,
+      "api_testing": 25,
+      "automation": 40,
+      "communication": 10
+    }
+  },
+  {
+    "id": "qa_mid",
+    "roleId": "qa_analyst",
+    "name": "QA Analyst Mid",
+    "weights": {
+      "problem_solving": 35,
+      "api_testing": 40,
+      "communication": 25
+    }
+  }
+]

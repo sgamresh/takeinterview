@@ -1,0 +1,22 @@
+[
+  {
+    "id": "problem_solving",
+    "name": "Problem Solving",
+    "description": "Logical thinking and structured approach to problem statements."
+  },
+  {
+    "id": "api_testing",
+    "name": "API Testing",
+    "description": "Understanding of API validation, status codes, and edge-case behavior."
+  },
+  {
+    "id": "automation",
+    "name": "Automation",
+    "description": "Ability to build maintainable automation frameworks and test suites."
+  },
+  {
+    "id": "communication",
+    "name": "Communication",
+    "description": "Clarity, collaboration, and ability to explain tradeoffs."
+  }
+]

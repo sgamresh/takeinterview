@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluation Report</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body data-page="report">
+  <header class="topbar">
+    <div>
+      <h1>Evaluation Report</h1>
+      <p class="subtitle">Professional interview summary</p>
+    </div>
+    <nav class="nav">
+      <a href="./index.html" class="nav-link">Dashboard</a>
+      <a href="./evaluate.html" class="nav-link">New Evaluation</a>
+      <a href="./admin.html" class="nav-link">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="panel" id="reportPanel"></section>
+    <section class="panel row gap">
+      <button id="downloadPdfBtn" class="btn btn-primary">Download PDF</button>
+      <button id="printBtn" class="btn btn-secondary">Print</button>
+      <a class="btn btn-ghost" href="./index.html">Back to Dashboard</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

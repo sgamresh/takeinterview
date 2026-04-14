@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate Candidate</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body data-page="evaluate">
+  <header class="topbar">
+    <div>
+      <h1>Candidate Evaluation</h1>
+      <p class="subtitle">Rate across dynamic skill modules</p>
+    </div>
+    <nav class="nav">
+      <a href="./index.html" class="nav-link">Dashboard</a>
+      <a href="./evaluate.html" class="nav-link active">New Evaluation</a>
+      <a href="./admin.html" class="nav-link">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Candidate Details</h2>
+      <form id="candidateForm"></form>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Skillset Evaluation</h2>
+        <span id="weightsMeta" class="badge">Select role and template</span>
+      </div>
+      <div id="moduleContainer" class="module-grid"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Scoring Summary</h2>
+      <div id="scoreSummary"></div>
+    </section>
+
+    <section class="panel row gap">
+      <button id="saveDraftBtn" class="btn btn-secondary">Save Draft</button>
+      <button id="resetBtn" class="btn btn-ghost">Reset Evaluation</button>
+      <button id="submitBtn" class="btn btn-primary">Generate Report</button>
+    </section>
+  </main>
+
+  <script type="module" src="./js/evaluation.js"></script>
+</body>
+</html>

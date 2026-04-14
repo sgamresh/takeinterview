@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Evaluation Engine</title>
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body data-page="index">
+  <header class="topbar">
+    <div>
+      <h1>Interview Evaluation Engine</h1>
+      <p class="subtitle">Offline-First Skill-Based Candidate Assessment</p>
+    </div>
+    <nav class="nav">
+      <a href="./index.html" class="nav-link active">Dashboard</a>
+      <a href="./evaluate.html" class="nav-link">New Evaluation</a>
+      <a href="./admin.html" class="nav-link">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="panel stats-grid" id="statsGrid"></section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Evaluation Actions</h2>
+        <div class="row gap">
+          <a class="btn btn-primary" href="./evaluate.html">Start New</a>
+          <button id="resumeDraftBtn" class="btn btn-secondary">Resume Draft</button>
+        </div>
+      </div>
+      <p id="draftStatus" class="muted"></p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Past Evaluations</h2>
+        <input id="searchInput" class="input" placeholder="Search by name, email, role..." />
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Role</th>
+              <th>Date</th>
+              <th>Score</th>
+              <th>Verdict</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="evaluationRows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Compare Candidates</h2>
+      <div class="row compare-row">
+        <select id="compareA" class="input"></select>
+        <select id="compareB" class="input"></select>
+        <button id="compareBtn" class="btn btn-primary">Compare</button>
+      </div>
+      <div id="comparisonResult"></div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
