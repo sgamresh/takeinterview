@@ -1,47 +1,102 @@
 [
     {
         "id": "problem_solving",
-        "name": "Problem Solving",
-        "description": "Logical thinking and structured approach to problem statements."
+        "name": "Analytical Problem Solving",
+        "description": "Break down ambiguous behavior, identify high-risk cases, isolate failure causes, and explain evidence-based conclusions."
     },
     {
         "id": "api_testing",
         "name": "API Testing",
-        "description": "Understanding of API validation, status codes, and edge-case behavior."
+        "description": "Validate REST or service behavior, HTTP methods and status codes, payloads, authentication, error handling, and boundary cases."
     },
     {
         "id": "automation",
-        "name": "Automation",
-        "description": "Ability to build maintainable automation frameworks and test suites."
+        "name": "Test Automation Engineering",
+        "description": "Design reliable, maintainable automated suites; choose appropriate test layers; manage test data, flakiness, and useful reporting."
     },
     {
         "id": "communication",
-        "name": "Communication",
-        "description": "Clarity, collaboration, and ability to explain tradeoffs."
+        "name": "Communication and Collaboration",
+        "description": "Explain findings clearly, collaborate across engineering and product teams, and communicate risk, tradeoffs, and status."
     },
     {
         "id": "appium",
-        "name": "Appium",
-        "description": "Appium"
+        "name": "Mobile Automation",
+        "description": "Automate native or hybrid mobile flows, diagnose synchronization and device issues, and discuss Appium or equivalent tooling."
     },
     {
         "id": "selenium",
-        "name": "Selenium",
-        "description": "Xpaths/Waits/FindElements"
+        "name": "Web UI Automation",
+        "description": "Build resilient browser tests using stable selectors, synchronization, and maintainable page or component patterns; discuss Selenium WebDriver, Playwright, or Cypress."
     },
     {
         "id": "manual",
-        "name": "Manual Testing",
-        "description": "manual"
+        "name": "Manual and Exploratory Testing",
+        "description": "Explore user workflows, use risk-based and boundary testing, reproduce issues, and adapt test ideas as new evidence emerges."
     },
     {
         "id": "cicd",
-        "name": "CICD Pipelines",
-        "description": "Jenkins/Concource"
+        "name": "CI/CD Test Integration",
+        "description": "Integrate appropriate tests into build and deployment pipelines, interpret failures, and improve feedback time using tools such as Jenkins or GitHub Actions."
     },
     {
         "id": "api_automation",
-        "name": "Api Automation",
-        "description": "Rest Assured"
+        "name": "API Test Automation",
+        "description": "Implement maintainable service-level checks for contracts, positive and negative cases, data setup, and regression using tools such as REST Assured or equivalent libraries."
+    },
+    {
+        "id": "test_design",
+        "name": "Test Design and Coverage",
+        "description": "Translate requirements into clear scenarios, prioritize by risk, use suitable test techniques, and identify meaningful coverage gaps."
+    },
+    {
+        "id": "defect_management",
+        "name": "Defect Investigation and Management",
+        "description": "Produce reproducible defect reports with expected and actual results, useful evidence, impact, and severity; verify fixes and manage regression risk."
+    },
+    {
+        "id": "database_testing",
+        "name": "SQL and Data Validation",
+        "description": "Use SQL and data reasoning to validate persistence, relationships, transformations, and consistency across application or service boundaries."
+    },
+    {
+        "id": "programming",
+        "name": "Programming and Scripting",
+        "description": "Write and debug readable test code, use core language constructs and data structures, and explain design choices in a relevant language such as Java, JavaScript/TypeScript, or Python."
+    },
+    {
+        "id": "test_strategy",
+        "name": "Test Strategy and Risk Planning",
+        "description": "Define scope, test levels, risk-based priorities, environments, dependencies, and exit criteria for a delivery or release."
+    },
+    {
+        "id": "quality_metrics",
+        "name": "Quality Reporting and Metrics",
+        "description": "Interpret coverage, defect trends, escape risk, and execution results; communicate limitations without treating raw counts as quality by themselves."
+    },
+    {
+        "id": "leadership",
+        "name": "Technical Leadership and Mentoring",
+        "description": "Guide quality practices, review test approaches, coach teammates, resolve delivery risks, and balance hands-on technical contribution with team outcomes."
+    },
+    {
+        "id": "stakeholder_management",
+        "name": "Stakeholder and Delivery Management",
+        "description": "Coordinate dependencies and test readiness, raise risks early, align quality decisions with product needs, and provide actionable delivery updates."
+    },
+    {
+        "id": "mobile_testing",
+        "name": "Mobile Application Testing",
+        "description": "Assess Android and iOS behavior across devices, OS versions, permissions, connectivity, lifecycle, accessibility, and compatibility conditions."
+    },
+    {
+        "id": "performance_testing",
+        "name": "Performance Test Engineering",
+        "description": "Plan load, stress, and endurance tests; define measurable objectives and workload profiles; create scripts and interpret results using tools such as JMeter, LoadRunner, or NeoLoad."
+    },
+    {
+        "id": "performance_analysis",
+        "name": "Performance Analysis and Diagnostics",
+        "description": "Correlate latency, throughput, errors, resource use, logs, and traces to identify bottlenecks and communicate evidence-based tuning recommendations."
     }
 ]

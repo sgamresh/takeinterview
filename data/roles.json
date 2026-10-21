@@ -1,41 +1,90 @@
 [
     {
-        "id": "sdet",
-        "name": "SDET",
+        "id": "manual_tester",
+        "name": "Manual QA / Test Analyst",
         "modules": [
             "problem_solving",
-            "api_testing",
-            "automation",
-            "communication",
-            "appium",
-            "selenium",
+            "test_design",
             "manual",
-            "cicd",
-            "api_automation"
+            "api_testing",
+            "database_testing",
+            "defect_management",
+            "quality_metrics",
+            "communication"
         ]
     },
     {
-        "id": "manual_tester",
-        "name": "Manual Tester",
+        "id": "sdet",
+        "name": "QA Automation Engineer (SDET)",
         "modules": [
             "problem_solving",
-            "communication",
-            "manual"
+            "test_design",
+            "automation",
+            "programming",
+            "selenium",
+            "api_testing",
+            "api_automation",
+            "database_testing",
+            "cicd",
+            "communication"
         ]
     },
     {
         "id": "lead",
-        "name": "Lead",
+        "name": "QA Lead",
         "modules": [
             "problem_solving",
-            "api_testing",
+            "test_strategy",
+            "test_design",
+            "defect_management",
+            "quality_metrics",
             "automation",
-            "communication",
+            "api_testing",
+            "leadership",
+            "stakeholder_management",
+            "communication"
+        ]
+    },
+    {
+        "id": "api_qa",
+        "name": "API QA Engineer",
+        "modules": [
+            "problem_solving",
+            "test_design",
+            "api_testing",
+            "api_automation",
+            "programming",
+            "database_testing",
+            "defect_management",
+            "communication"
+        ]
+    },
+    {
+        "id": "mobile_qa",
+        "name": "Mobile QA Engineer",
+        "modules": [
+            "problem_solving",
+            "test_design",
+            "mobile_testing",
             "appium",
-            "selenium",
-            "manual",
-            "cicd",
-            "api_automation"
+            "automation",
+            "api_testing",
+            "defect_management",
+            "communication"
+        ]
+    },
+    {
+        "id": "performance_tester",
+        "name": "Performance Test Engineer",
+        "modules": [
+            "problem_solving",
+            "test_design",
+            "performance_testing",
+            "performance_analysis",
+            "programming",
+            "automation",
+            "database_testing",
+            "communication"
         ]
     }
 ]
