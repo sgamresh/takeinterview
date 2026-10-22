@@ -25,7 +25,20 @@ function safeWrite(key, value) {
 export async function loadConfig(type) {
   const response = await fetch(`./data/${type}.json`, { cache: "no-store" });
   if (!response.ok) throw new Error(`Unable to load ${type}.json`);
-  return response.json();
+  const config = await response.json();
+  return type === "modules" ? normalizeModules(config) : config;
+}
+
+export function normalizeModules(modules) {
+  if (!Array.isArray(modules)) throw new Error("modules.json must be an array.");
+  return modules.map((module) => {
+    if (!module || typeof module !== "object") return module;
+    const { description, ...rest } = module;
+    return {
+      ...rest,
+      questionnaire: String(module.questionnaire ?? description ?? "")
+    };
+  });
 }
 
 export async function loadAllConfigs() {
@@ -180,6 +193,9 @@ export function cloneEvaluationPayload(id) {
     moduleInputs: source.modules.map((item) => ({
       moduleId: item.id,
       rating: item.rating,
+      ratingOverride: item.ratingOverride,
+      questionnaireResponses: item.questionnaireResponses,
+      questionnaireAnswers: item.questionnaireAnswers,
       notes: item.notes
     }))
   };
@@ -201,6 +217,9 @@ function toDraftFromEvaluation(evaluation) {
     moduleInputs: (evaluation.modules || []).map((item) => ({
       moduleId: item.id,
       rating: Number(item.rating || 0),
+      ratingOverride: item.ratingOverride,
+      questionnaireResponses: item.questionnaireResponses,
+      questionnaireAnswers: item.questionnaireAnswers,
       notes: String(item.notes || "")
     })),
     savedAt: new Date().toISOString()

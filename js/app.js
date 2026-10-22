@@ -265,8 +265,20 @@ function renderComparison(a, b) {
       const right = b.modules.find((item) => item.id === id);
       return `
         <div>${escapeHtml(left?.name || right?.name || id)}</div>
-        <div>${left ? `${left.rating}/5 (${left.score.toFixed(1)})` : "-"}</div>
-        <div>${right ? `${right.rating}/5 (${right.score.toFixed(1)})` : "-"}</div>
+        <div>${
+          left
+            ? left.rating
+              ? `${left.rating}/5${left.ratingOverride ? " (manual override)" : ""} (${left.score.toFixed(1)})`
+              : "N/A (excluded)"
+            : "-"
+        }</div>
+        <div>${
+          right
+            ? right.rating
+              ? `${right.rating}/5${right.ratingOverride ? " (manual override)" : ""} (${right.score.toFixed(1)})`
+              : "N/A (excluded)"
+            : "-"
+        }</div>
       `;
     })
     .join("");
@@ -316,6 +328,7 @@ function initReport() {
         <p class="muted">Final Score</p>
         <p class="large">${target.percentage.toFixed(2)}%</p>
         <span class="pill ${verdictClass(target.verdict)}">${escapeHtml(target.verdict)}</span>
+        <p class="muted">${target.modules.filter((item) => item.rating).length} of ${target.modules.length} modules scored; NA modules are excluded.</p>
       </div>
     </div>
     <div class="table-wrap">
@@ -323,6 +336,7 @@ function initReport() {
         <thead>
           <tr>
             <th>Module</th>
+            <th>Questionnaire Responses</th>
             <th>Rating</th>
             <th>Weight</th>
             <th>Score</th>
@@ -331,17 +345,34 @@ function initReport() {
         </thead>
         <tbody>
           ${target.modules
-            .map(
-              (item) => `
+            .map((item) => {
+              const applicableAnswers = Array.isArray(item.questionnaireAnswers)
+                ? item.questionnaireAnswers.filter((answer) => answer.answer !== "na")
+                : [];
+              return `
               <tr>
                 <td>${escapeHtml(item.name)}</td>
-                <td>${item.rating}/5</td>
-                <td>${item.weight}%</td>
-                <td>${item.score.toFixed(2)}</td>
+                <td>
+                  ${
+                    applicableAnswers.length
+                      ? `<ol class="report-questions">${applicableAnswers
+                          .map(
+                            (answer) =>
+                              `<li><span class="question-response-text ${
+                                answer.answer === "true" ? "positive" : "negative"
+                              }">${escapeHtml(answer.question)}</span></li>`
+                          )
+                          .join("")}</ol>`
+                      : "-"
+                  }
+                </td>
+                <td>${item.rating ? `${item.rating}/5` : "Not rated"}</td>
+                <td>${item.rating ? `${item.weight}%` : "N/A (excluded)"}</td>
+                <td>${Number(item.score || 0).toFixed(2)}${item.rating ? "" : " (excluded)"}</td>
                 <td>${escapeHtml(item.notes || "-")}</td>
               </tr>
-            `
-            )
+              `;
+            })
             .join("")}
         </tbody>
       </table>

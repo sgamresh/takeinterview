@@ -1,5 +1,5 @@
 import { confirmAction } from "../components/modal.js";
-import { parseJsonFile } from "./storage.js";
+import { normalizeModules, parseJsonFile } from "./storage.js";
 import { escapeHtml, uuid } from "./ui.js";
 
 const state = {
@@ -32,7 +32,7 @@ async function loadFromServer() {
   const res = await fetch("./api/config.php", { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to load server JSON config.");
   const data = await res.json();
-  state.modules = Array.isArray(data.modules) ? data.modules : [];
+  state.modules = normalizeModules(Array.isArray(data.modules) ? data.modules : []);
   state.roles = Array.isArray(data.roles) ? data.roles : [];
   state.templates = Array.isArray(data.templates) ? data.templates : [];
   setDirty(false);
@@ -60,14 +60,14 @@ function renderModuleRows() {
   const target = document.getElementById("moduleRows");
   target.innerHTML = state.modules
     .map((item) => {
-      const questionCount = String(item.description || "")
+      const questionCount = String(item.questionnaire || "")
         .split(/\r?\n/)
         .filter((question) => question.trim()).length;
       return `
         <tr>
           <td>${escapeHtml(item.id)}</td>
           <td>${escapeHtml(item.name)}</td>
-          <td>${questionCount} interview questions</td>
+          <td>${questionCount} questionnaire items</td>
           <td class="row gap">
             <button class="btn btn-ghost" data-action="edit-module" data-id="${escapeHtml(item.id)}">Edit</button>
             <button class="btn btn-ghost" data-action="delete-module" data-id="${escapeHtml(item.id)}">Delete</button>
@@ -133,7 +133,7 @@ function openModuleForm(item = null) {
     <div class="field-grid">
       <label class="field"><span>ID</span><input name="id" class="input" required value="${escapeHtml(item?.id || "")}" ${item ? "disabled" : ""} /></label>
       <label class="field"><span>Name</span><input name="name" class="input" required value="${escapeHtml(item?.name || "")}" /></label>
-      <label class="field module-questions-field"><span>Interview Questions (one per line)</span><textarea name="description" class="input" rows="6" required>${escapeHtml(item?.description || "")}</textarea></label>
+      <label class="field module-questions-field"><span>Questionnaire Items (one per line)</span><textarea name="questionnaire" class="input" rows="6" required>${escapeHtml(item?.questionnaire || "")}</textarea></label>
     </div>
     <div class="inline-actions">
       <button class="btn btn-primary" type="submit">${item ? "Update" : "Add"} Module</button>
@@ -239,18 +239,18 @@ function wireForms() {
     event.preventDefault();
     const form = event.currentTarget;
     const fd = new FormData(form);
-    const questions = String(fd.get("description") || "")
+    const questions = String(fd.get("questionnaire") || "")
       .split(/\r?\n/)
       .map((question) => question.trim())
       .filter(Boolean);
     if (questions.length !== 5) {
-      alert("Enter exactly five interview questions, one per line.");
+      alert("Enter exactly five questionnaire items, one per line.");
       return;
     }
     const payload = {
       id: state.editModuleId || String(fd.get("id") || "").trim() || uuid("module"),
       name: String(fd.get("name") || "").trim(),
-      description: questions.join("\n")
+      questionnaire: questions.join("\n")
     };
     if (state.editModuleId) {
       state.modules = state.modules.map((item) => (item.id === state.editModuleId ? payload : item));
@@ -391,7 +391,7 @@ function wireGlobalActions() {
 
   bindImport("importModules", (parsed) => {
     if (!Array.isArray(parsed)) throw new Error("modules.json must be an array.");
-    state.modules = parsed;
+    state.modules = normalizeModules(parsed);
     onStateChanged();
   });
   bindImport("importRoles", (parsed) => {

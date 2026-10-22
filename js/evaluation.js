@@ -73,10 +73,19 @@ function renderModulesFromSelection(prefilledModules = []) {
     const weight = Number(template.weights?.[moduleId] || 0);
     const card = createModuleCard(moduleData, weight, prefilledMap.get(moduleId));
     const ratingEl = card.querySelector(".module-rating");
+    const ratingOverrideEl = card.querySelector(".module-rating-override");
     const notesEl = card.querySelector(".module-notes");
-    ratingEl.addEventListener("change", () => {
+    const refresh = () => {
       updateModuleVisuals(card, weight);
       renderSummary(readModuleInputs(els.moduleContainer));
+    };
+    ratingEl.addEventListener("change", () => {
+      ratingOverrideEl.checked = true;
+      refresh();
+    });
+    ratingOverrideEl.addEventListener("change", refresh);
+    card.querySelectorAll(".questionnaire-item input").forEach((input) => {
+      input.addEventListener("change", refresh);
     });
     notesEl.addEventListener("input", () => renderSummary(readModuleInputs(els.moduleContainer)));
     els.moduleContainer.appendChild(card);
@@ -87,14 +96,18 @@ function renderModulesFromSelection(prefilledModules = []) {
 function renderSummary(inputs) {
   const { role, template } = getCurrentSelection();
   if (!role || !template || !inputs.length) {
-    els.scoreSummary.innerHTML = `<p class="muted">Scoring summary appears after module ratings are added.</p>`;
+    els.scoreSummary.innerHTML = `<p class="muted">Scoring summary appears after questionnaire items are answered or a rating is overridden.</p>`;
     return;
   }
-  const totalWeight = role.modules.reduce((sum, id) => sum + Number(template.weights?.[id] || 0), 0);
+  const ratedInputs = inputs.filter((item) => item.rating > 0);
+  const totalWeight = ratedInputs.reduce(
+    (sum, item) => sum + Number(template.weights?.[item.moduleId] || 0),
+    0
+  );
   const totalScore = inputs.reduce((sum, item) => sum + Number(item.rating || 0) * Number(template.weights?.[item.moduleId] || 0), 0);
   const maxScore = 5 * totalWeight;
   const percentage = maxScore ? (totalScore / maxScore) * 100 : 0;
-  const verdict = verdictFromPercentage(percentage);
+  const verdict = ratedInputs.length ? verdictFromPercentage(percentage) : "";
 
   const moduleBlocks = inputs
     .map((item) => {
@@ -104,8 +117,12 @@ function renderSummary(inputs) {
       return `
         <div class="summary-card">
           <strong>${escapeHtml(moduleData?.name || item.moduleId)}</strong>
-          <p class="muted">Rating: ${item.rating || 0}/5 | Weight: ${weight}%</p>
-          <p>Score: ${score.toFixed(2)}</p>
+          <p class="muted">${
+            item.rating
+              ? `Rating: ${item.rating}/5${item.ratingOverride ? " (manual override)" : ""} | Weight: ${weight}%`
+              : "Not rated (all items are NA)"
+          }</p>
+          <p>${item.rating ? `Score: ${score.toFixed(2)}` : "Excluded from scoring"}</p>
         </div>
       `;
     })
@@ -116,8 +133,9 @@ function renderSummary(inputs) {
       ${moduleBlocks}
       <div class="summary-card">
         <p class="muted">Total Score</p>
-        <p class="large">${percentage.toFixed(2)}%</p>
-        <span class="pill ${verdictClass(verdict)}">${verdict}</span>
+        <p class="large">${ratedInputs.length ? `${percentage.toFixed(2)}%` : "Not rated"}</p>
+        ${verdict ? `<span class="pill ${verdictClass(verdict)}">${verdict}</span>` : ""}
+        <p class="muted">${ratedInputs.length} of ${inputs.length} modules included; NA items are excluded.</p>
       </div>
     </div>
   `;
@@ -143,13 +161,28 @@ function collectPayload() {
       id: item.moduleId,
       name: moduleData?.name || item.moduleId,
       rating: item.rating,
+      ratingOverride: item.ratingOverride,
+      questionnaireResponses: item.questionnaireResponses,
+      questionnaireAnswers: String(moduleData?.questionnaire || "")
+        .split(/\r?\n/)
+        .map((question) => question.trim())
+        .filter(Boolean)
+        .map((question, index) => ({
+          question,
+          answer: item.questionnaireResponses[index] || "na"
+        })),
       weight,
       score: item.rating * weight,
       notes: item.notes
     };
   });
-  const totalWeight = modules.reduce((sum, item) => sum + Number(item.weight), 0);
+  const totalWeight = modules.reduce((sum, item) => sum + (item.rating ? Number(item.weight) : 0), 0);
   const totalScore = modules.reduce((sum, item) => sum + Number(item.score), 0);
+  if (!totalWeight) {
+    const errors = ["At least one module must have a rating to generate a report."];
+    showErrors(document.getElementById("candidateErrors"), errors);
+    return { errors };
+  }
   const percentage = totalWeight ? (totalScore / (5 * totalWeight)) * 100 : 0;
 
   return {
@@ -209,6 +242,9 @@ async function init() {
         moduleInputs: reevalSource.modules.map((item) => ({
           moduleId: item.id,
           rating: item.rating,
+          ratingOverride: item.ratingOverride,
+          questionnaireResponses: item.questionnaireResponses,
+          questionnaireAnswers: item.questionnaireAnswers,
           notes: item.notes
         }))
       }
