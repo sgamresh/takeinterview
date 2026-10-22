@@ -212,6 +212,27 @@ textarea {
   margin-bottom: 2px;
 }
 
+.module-questions {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.module-questions li {
+  padding-left: 2px;
+  line-height: 1.45;
+}
+
+.module-questions-field {
+  grid-column: 1 / -1;
+}
+
+.module-questions-field textarea {
+  min-height: 160px;
+}
+
 .progress {
   height: 8px;
   background: #ecefed;

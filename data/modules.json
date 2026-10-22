@@ -2,116 +2,116 @@
     {
         "id": "problem_solving",
         "name": "Analytical Problem Solving",
-        "description": "Break down ambiguous behavior, identify high-risk cases, isolate failure causes, and explain evidence-based conclusions."
+        "description": "Describe a complex defect you investigated and how you isolated its root cause.\nHow do you prioritize test coverage when requirements are incomplete?\nTell me about a time evidence changed your initial hypothesis.\nHow would you investigate intermittent playback failures reported by only some subscribers?\nHow do you communicate uncertainty while still recommending a clear next step?"
     },
     {
         "id": "api_testing",
         "name": "API Testing",
-        "description": "Validate REST or service behavior, HTTP methods and status codes, payloads, authentication, error handling, and boundary cases."
+        "description": "How would you test APIs for catalog discovery, playback authorization, and subscription status?\nWhich positive, negative, boundary, and contract cases would you include for a playback-session endpoint?\nHow would you test expired tokens and entitlement changes during playback?\nHow do you verify API behavior under retries, timeouts, and partial service failures?\nWhat evidence would you collect when an API response is correct but playback still fails?"
     },
     {
         "id": "automation",
         "name": "Test Automation Engineering",
-        "description": "Design reliable, maintainable automated suites; choose appropriate test layers; manage test data, flakiness, and useful reporting."
+        "description": "How would you decide which OTT workflows to automate at UI, API, and service levels?\nHow do you design a maintainable regression suite for web, mobile, and connected-TV clients?\nHow would you diagnose and reduce flaky playback tests?\nHow do you manage test accounts, subscriptions, and media assets across parallel runs?\nWhich automation results would you report to help a release manager make a decision?"
     },
     {
         "id": "communication",
         "name": "Communication and Collaboration",
-        "description": "Explain findings clearly, collaborate across engineering and product teams, and communicate risk, tradeoffs, and status."
+        "description": "How would you explain a release-blocking streaming issue to both engineering and business stakeholders?\nTell me about a time you had to communicate a quality risk with incomplete evidence.\nHow do you tailor a test status update for executives, product owners, and engineers?\nHow would you handle disagreement about the severity of a subscriber-impacting defect?\nWhat information do you include in a concise test completion report?"
     },
     {
         "id": "appium",
         "name": "Mobile Automation",
-        "description": "Automate native or hybrid mobile flows, diagnose synchronization and device issues, and discuss Appium or equivalent tooling."
+        "description": "How would you automate sign-in and playback flows across iOS and Android using Appium or an equivalent tool?\nHow do you synchronize tests with buffering, ads, and asynchronous player state changes?\nHow would you select devices and OS versions for a representative OTT mobile test matrix?\nHow do you investigate a failure that occurs only on a specific device model?\nHow would you test app interruptions, backgrounding, and network changes during playback?"
     },
     {
         "id": "selenium",
         "name": "Web UI Automation",
-        "description": "Build resilient browser tests using stable selectors, synchronization, and maintainable page or component patterns; discuss Selenium WebDriver, Playwright, or Cypress."
+        "description": "How would you build reliable browser tests for search, entitlement, and video playback using Playwright, Cypress, or Selenium?\nHow do you wait for player state changes without relying on brittle fixed delays?\nHow would you test browser compatibility and DRM playback across supported platforms?\nWhat strategies do you use to keep UI tests stable when ads or recommendations change page content?\nHow would you capture useful diagnostics from a failed browser playback test?"
     },
     {
         "id": "manual",
         "name": "Manual and Exploratory Testing",
-        "description": "Explore user workflows, use risk-based and boundary testing, reproduce issues, and adapt test ideas as new evidence emerges."
+        "description": "Walk me through an exploratory test session for a live-streaming event.\nHow would you test a subscriber journey from account creation through playback cancellation or renewal?\nWhich boundary cases would you explore when switching audio, subtitles, or playback quality?\nHow do you reproduce and document a buffering issue that occurs only on a particular network?\nHow do you adapt exploratory testing when a release candidate changes during execution?"
     },
     {
         "id": "cicd",
         "name": "CI/CD Test Integration",
-        "description": "Integrate appropriate tests into build and deployment pipelines, interpret failures, and improve feedback time using tools such as Jenkins or GitHub Actions."
+        "description": "Which OTT tests would you run on every pull request, nightly, and before production release?\nHow would you integrate device or playback tests into Jenkins, GitHub Actions, or an equivalent pipeline?\nHow do you prevent unstable media-environment dependencies from blocking useful pipeline feedback?\nWhat should happen when a critical test fails after a deployment has started?\nHow would you balance fast feedback with broad device and streaming coverage?"
     },
     {
         "id": "api_automation",
         "name": "API Test Automation",
-        "description": "Implement maintainable service-level checks for contracts, positive and negative cases, data setup, and regression using tools such as REST Assured or equivalent libraries."
+        "description": "How would you automate contract and regression tests for catalog, entitlement, and playback APIs?\nHow do you create isolated test data for users with different subscription and regional rights?\nWhat negative cases would you automate for DRM license and playback-session services?\nHow do you validate asynchronous service workflows without introducing timing-sensitive tests?\nHow would you structure API automation so failures identify the affected service and behavior clearly?"
     },
     {
         "id": "test_design",
         "name": "Test Design and Coverage",
-        "description": "Translate requirements into clear scenarios, prioritize by risk, use suitable test techniques, and identify meaningful coverage gaps."
+        "description": "How do you turn OTT product requirements into testable scenarios and acceptance criteria?\nHow would you build coverage for live, video-on-demand, and ad-supported playback?\nHow do you prioritize coverage across devices, regions, subscription tiers, and network conditions?\nWhich techniques help you identify gaps in a large playback and content-discovery workflow?\nHow do you trace test coverage from a requirement to release evidence?"
     },
     {
         "id": "defect_management",
         "name": "Defect Investigation and Management",
-        "description": "Produce reproducible defect reports with expected and actual results, useful evidence, impact, and severity; verify fixes and manage regression risk."
+        "description": "What information makes a streaming defect report reproducible and actionable?\nHow would you assess severity for a playback failure affecting one device family versus all subscribers?\nHow do you capture timestamps, session identifiers, player logs, and network evidence while protecting user data?\nHow do you verify a fix and identify adjacent playback regressions?\nTell me how you would manage triage when several teams own different parts of the media pipeline."
     },
     {
         "id": "database_testing",
         "name": "SQL and Data Validation",
-        "description": "Use SQL and data reasoning to validate persistence, relationships, transformations, and consistency across application or service boundaries."
+        "description": "How would you validate that content metadata remains consistent from ingestion through catalog display?\nWhich data checks would you use to verify subscription entitlements and regional availability?\nHow do you investigate discrepancies between billing, entitlement, and playback records?\nHow would you validate migration or synchronization of media catalog data?\nWhat safeguards do you use when querying production-like data during an investigation?"
     },
     {
         "id": "programming",
         "name": "Programming and Scripting",
-        "description": "Write and debug readable test code, use core language constructs and data structures, and explain design choices in a relevant language such as Java, JavaScript/TypeScript, or Python."
+        "description": "Describe a test utility or script you built and the problem it solved.\nHow would you process playback events to identify sessions with repeated rebuffering?\nHow do you structure test code so setup, assertions, and cleanup remain understandable?\nHow would you debug a script that passes locally but fails in the CI environment?\nWhich language and libraries would you choose for an OTT test task, and why?"
     },
     {
         "id": "test_strategy",
         "name": "Test Strategy and Risk Planning",
-        "description": "Define scope, test levels, risk-based priorities, environments, dependencies, and exit criteria for a delivery or release."
+        "description": "How would you create a test strategy for a major OTT platform release?\nHow do you identify and rank risks across content ingestion, playback, subscriptions, and advertising?\nWhich test environments, device labs, and external dependencies must be ready before execution?\nHow do you define measurable entry and exit criteria for a release?\nHow would you adapt the strategy when a critical live-event test window is limited?"
     },
     {
         "id": "quality_metrics",
         "name": "Quality Reporting and Metrics",
-        "description": "Interpret coverage, defect trends, escape risk, and execution results; communicate limitations without treating raw counts as quality by themselves."
+        "description": "Which quality indicators best communicate OTT release readiness, and what are their limitations?\nHow would you interpret trends in startup time, rebuffering, playback errors, and escaped defects?\nHow do you distinguish meaningful coverage from a high volume of executed tests?\nHow would you present quality risks when device or regional coverage is incomplete?\nTell me how you used metrics to drive a process improvement without creating harmful incentives."
     },
     {
         "id": "leadership",
         "name": "Technical Leadership and Mentoring",
-        "description": "Guide quality practices, review test approaches, coach teammates, resolve delivery risks, and balance hands-on technical contribution with team outcomes."
+        "description": "How do you coach a team to improve quality ownership across development, QA, and operations?\nTell me about a time you mentored a tester through a difficult technical or delivery challenge.\nHow do you allocate team capacity across automation, exploratory testing, and release support?\nHow would you resolve conflicting priorities between teams during a high-risk launch?\nHow do you assess whether your quality improvements are sustainable across the team?"
     },
     {
         "id": "stakeholder_management",
         "name": "Stakeholder and Delivery Management",
-        "description": "Coordinate dependencies and test readiness, raise risks early, align quality decisions with product needs, and provide actionable delivery updates."
+        "description": "How do you coordinate test readiness across product, engineering, content operations, and service providers?\nHow would you handle a stakeholder request to ship while a significant playback risk remains unresolved?\nWhat is your approach to escalating a dependency that threatens a committed release date?\nHow do you align quality decisions with subscriber impact and business priorities?\nDescribe how you communicate ownership and next steps after a cross-team incident."
     },
     {
         "id": "mobile_testing",
         "name": "Mobile Application Testing",
-        "description": "Assess Android and iOS behavior across devices, OS versions, permissions, connectivity, lifecycle, accessibility, and compatibility conditions."
+        "description": "How would you design an OTT mobile compatibility matrix across devices, OS versions, and screen sizes?\nHow do you test playback through Wi-Fi and cellular transitions, weak signal, and offline recovery?\nWhich mobile lifecycle and interruption scenarios are important during a stream?\nHow would you evaluate accessibility for playback controls, captions, and screen readers?\nHow do you prioritize mobile defects that affect only specific devices or OS versions?"
     },
     {
         "id": "performance_testing",
         "name": "Performance Test Engineering",
-        "description": "Plan load, stress, and endurance tests; define measurable objectives and workload profiles; create scripts and interpret results using tools such as JMeter, LoadRunner, or NeoLoad."
+        "description": "How would you model concurrent viewers for a popular live OTT event?\nWhich performance objectives would you define for playback APIs, license services, and content delivery?\nHow do you design ramp-up, spike, stress, and endurance scenarios using tools such as JMeter or k6?\nHow would you account for CDN caching and realistic viewer geography in a load test?\nWhat safeguards do you put in place before running load against shared or production-like services?"
     },
     {
         "id": "performance_analysis",
         "name": "Performance Analysis and Diagnostics",
-        "description": "Correlate latency, throughput, errors, resource use, logs, and traces to identify bottlenecks and communicate evidence-based tuning recommendations."
+        "description": "How would you correlate player QoE events with CDN, origin, and service telemetry?\nWhich signals help distinguish a client issue from an origin, network, or CDN bottleneck?\nHow do you investigate rising startup time or rebuffering during a traffic spike?\nHow would you use logs, metrics, and distributed traces to isolate a playback-session failure?\nHow do you present diagnostic evidence and tuning recommendations to engineering teams?"
     },
     {
         "id": "ott_domain_expertise",
         "name": "OTT and Media Workflow Expertise",
-        "description": "Understand OTT platform architecture and media workflows, including content ingestion and metadata, encoding and packaging, DRM, CDN delivery, subscriptions and advertising, and live and on-demand playback."
+        "description": "Describe the end-to-end path from content ingestion and metadata preparation to subscriber playback.\nHow do encoding, packaging, DRM, and CDN delivery interact in an OTT platform?\nWhat are the key workflow differences between live and video-on-demand content?\nHow would you test subscription entitlements, regional rights, and ad-supported access?\nWhich media workflow failures would you prioritize for investigation before a major launch?"
     },
     {
         "id": "streaming_quality_testing",
         "name": "Streaming Quality and Compatibility Testing",
-        "description": "Plan and assess end-to-end streaming tests across web, mobile, and connected-TV devices, including playback startup, adaptive bitrate, buffering, live events, DRM, network conditions, and QoE measures using appropriate device labs, network tools, and observability."
+        "description": "Which QoE measures would you use to assess playback startup, rebuffering, and fatal errors?\nHow would you verify adaptive bitrate behavior as bandwidth and network stability change?\nHow would you test live-stream latency, synchronization, and recovery across supported devices?\nWhat device, browser, DRM, and network combinations belong in a risk-based compatibility plan?\nHow do you combine device-lab results and production telemetry to identify streaming quality gaps?"
     },
     {
         "id": "delivery_release_management",
         "name": "Project and Release Management",
-        "description": "Plan and track test delivery, environments, dependencies, resources, and release readiness; coordinate execution and communicate go/no-go risks and status to stakeholders."
+        "description": "How do you build a delivery plan for OTT testing across multiple teams and release milestones?\nHow do you forecast tester, device-lab, and automation capacity against overlapping projects?\nWhich readiness checks and dependencies must be confirmed before a production release?\nHow would you manage a release plan when a critical defect or external vendor delay changes the schedule?\nWhat evidence and stakeholder alignment do you require for a go/no-go recommendation?"
     }
 ]

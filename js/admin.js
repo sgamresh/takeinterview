@@ -59,19 +59,22 @@ async function saveToServer() {
 function renderModuleRows() {
   const target = document.getElementById("moduleRows");
   target.innerHTML = state.modules
-    .map(
-      (item) => `
+    .map((item) => {
+      const questionCount = String(item.description || "")
+        .split(/\r?\n/)
+        .filter((question) => question.trim()).length;
+      return `
         <tr>
           <td>${escapeHtml(item.id)}</td>
           <td>${escapeHtml(item.name)}</td>
-          <td>${escapeHtml(item.description || "-")}</td>
+          <td>${questionCount} interview questions</td>
           <td class="row gap">
             <button class="btn btn-ghost" data-action="edit-module" data-id="${escapeHtml(item.id)}">Edit</button>
             <button class="btn btn-ghost" data-action="delete-module" data-id="${escapeHtml(item.id)}">Delete</button>
           </td>
         </tr>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -130,7 +133,7 @@ function openModuleForm(item = null) {
     <div class="field-grid">
       <label class="field"><span>ID</span><input name="id" class="input" required value="${escapeHtml(item?.id || "")}" ${item ? "disabled" : ""} /></label>
       <label class="field"><span>Name</span><input name="name" class="input" required value="${escapeHtml(item?.name || "")}" /></label>
-      <label class="field"><span>Description</span><input name="description" class="input" value="${escapeHtml(item?.description || "")}" /></label>
+      <label class="field module-questions-field"><span>Interview Questions (one per line)</span><textarea name="description" class="input" rows="6" required>${escapeHtml(item?.description || "")}</textarea></label>
     </div>
     <div class="inline-actions">
       <button class="btn btn-primary" type="submit">${item ? "Update" : "Add"} Module</button>
@@ -236,10 +239,18 @@ function wireForms() {
     event.preventDefault();
     const form = event.currentTarget;
     const fd = new FormData(form);
+    const questions = String(fd.get("description") || "")
+      .split(/\r?\n/)
+      .map((question) => question.trim())
+      .filter(Boolean);
+    if (questions.length !== 5) {
+      alert("Enter exactly five interview questions, one per line.");
+      return;
+    }
     const payload = {
       id: state.editModuleId || String(fd.get("id") || "").trim() || uuid("module"),
       name: String(fd.get("name") || "").trim(),
-      description: String(fd.get("description") || "").trim()
+      description: questions.join("\n")
     };
     if (state.editModuleId) {
       state.modules = state.modules.map((item) => (item.id === state.editModuleId ? payload : item));

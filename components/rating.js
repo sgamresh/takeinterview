@@ -9,11 +9,15 @@ export function createModuleCard(module, weight = 0, initial = {}) {
   const card = document.createElement("article");
   card.className = "module-card";
   card.dataset.moduleId = module.id;
+  const questions = String(module.description || "")
+    .split(/\r?\n/)
+    .map((question) => question.trim())
+    .filter(Boolean);
 
   card.innerHTML = `
     <div>
       <h3>${escapeHtml(module.name)}</h3>
-      <p class="muted">${escapeHtml(module.description || "")}</p>
+      <ol class="module-questions">${questions.map((question) => `<li>${escapeHtml(question)}</li>`).join("")}</ol>
     </div>
     <div class="field">
       <span>Weight: <strong>${Number(weight)}%</strong></span>
