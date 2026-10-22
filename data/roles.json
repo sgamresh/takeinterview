@@ -86,5 +86,25 @@
             "database_testing",
             "communication"
         ]
+    },
+    {
+        "id": "ott_test_manager",
+        "name": "OTT Test Manager",
+        "modules": [
+            "problem_solving",
+            "ott_domain_expertise",
+            "streaming_quality_testing",
+            "manual",
+            "automation",
+            "api_testing",
+            "performance_testing",
+            "test_strategy",
+            "delivery_release_management",
+            "defect_management",
+            "quality_metrics",
+            "leadership",
+            "stakeholder_management",
+            "communication"
+        ]
     }
 ]

@@ -98,5 +98,20 @@
         "id": "performance_analysis",
         "name": "Performance Analysis and Diagnostics",
         "description": "Correlate latency, throughput, errors, resource use, logs, and traces to identify bottlenecks and communicate evidence-based tuning recommendations."
+    },
+    {
+        "id": "ott_domain_expertise",
+        "name": "OTT and Media Workflow Expertise",
+        "description": "Understand OTT platform architecture and media workflows, including content ingestion and metadata, encoding and packaging, DRM, CDN delivery, subscriptions and advertising, and live and on-demand playback."
+    },
+    {
+        "id": "streaming_quality_testing",
+        "name": "Streaming Quality and Compatibility Testing",
+        "description": "Plan and assess end-to-end streaming tests across web, mobile, and connected-TV devices, including playback startup, adaptive bitrate, buffering, live events, DRM, network conditions, and QoE measures using appropriate device labs, network tools, and observability."
+    },
+    {
+        "id": "delivery_release_management",
+        "name": "Project and Release Management",
+        "description": "Plan and track test delivery, environments, dependencies, resources, and release readiness; coordinate execution and communicate go/no-go risks and status to stakeholders."
     }
 ]
