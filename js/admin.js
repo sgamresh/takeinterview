@@ -6,6 +6,7 @@ const state = {
   modules: [],
   roles: [],
   templates: [],
+  answerGuides: {},
   editModuleId: null,
   editRoleId: null,
   editTemplateId: null,
@@ -35,6 +36,18 @@ async function loadFromServer() {
   state.modules = normalizeModules(Array.isArray(data.modules) ? data.modules : []);
   state.roles = Array.isArray(data.roles) ? data.roles : [];
   state.templates = Array.isArray(data.templates) ? data.templates : [];
+  const answerGuidesResponse = await fetch("./api/answer-key.php", { cache: "no-store" });
+  const answerGuides = await answerGuidesResponse.json();
+  if (answerGuidesResponse.status === 404 && answerGuides?.error === "Local interviewer answer guide is missing") {
+    state.answerGuides = {};
+    setDirty(false);
+    return;
+  }
+  if (!answerGuidesResponse.ok || !answerGuides || typeof answerGuides !== "object" || Array.isArray(answerGuides)) {
+    const message = answerGuides && typeof answerGuides === "object" ? answerGuides.error : "";
+    throw new Error(message || "Failed to load the local answer key.");
+  }
+  state.answerGuides = answerGuides;
   setDirty(false);
 }
 
@@ -53,7 +66,28 @@ async function saveToServer() {
   if (!res.ok || !json.ok) {
     throw new Error(json.error || "Failed to save JSON files.");
   }
+  const answerKeyResponse = await fetch("./api/answer-key.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ answerGuides: state.answerGuides })
+  });
+  const answerKeyResult = await answerKeyResponse.json().catch(() => ({}));
+  if (!answerKeyResponse.ok || !answerKeyResult.ok) {
+    throw new Error(
+      answerKeyResult.error
+        ? `Configuration files saved, but answer key save failed: ${answerKeyResult.error}`
+        : "Configuration files saved, but answer key save failed."
+    );
+  }
   setDirty(false);
+}
+
+function focusEditPanel(form) {
+  const panel = form.closest(".panel");
+  requestAnimationFrame(() => {
+    panel?.scrollIntoView({ behavior: "smooth", block: "start" });
+    form.querySelector("input:not([disabled]), textarea, select")?.focus({ preventScroll: true });
+  });
 }
 
 function renderModuleRows() {
@@ -128,6 +162,14 @@ function renderTemplateRows() {
 
 function openModuleForm(item = null) {
   const form = document.getElementById("moduleForm");
+  const questions = String(item?.questionnaire || "").split(/\r?\n/);
+  const answerGuideFields = Array.from({ length: 5 }, (_, index) => `
+    <label class="field">
+      <span>Answer key - item ${index + 1}</span>
+      <small class="muted">${escapeHtml(questions[index] || `Questionnaire item ${index + 1}`)}</small>
+      <textarea name="answerGuide_${index}" class="input" rows="2">${escapeHtml(state.answerGuides[item?.id]?.[index] || "")}</textarea>
+    </label>
+  `).join("");
   form.classList.remove("hidden");
   form.innerHTML = `
     <div class="field-grid">
@@ -135,12 +177,18 @@ function openModuleForm(item = null) {
       <label class="field"><span>Name</span><input name="name" class="input" required value="${escapeHtml(item?.name || "")}" /></label>
       <label class="field module-questions-field"><span>Questionnaire Items (one per line)</span><textarea name="questionnaire" class="input" rows="6" required>${escapeHtml(item?.questionnaire || "")}</textarea></label>
     </div>
+    <div class="answer-key-editor">
+      <h3>Strong-answer indicators</h3>
+      <p class="muted">These appear as guidance beside each questionnaire item during evaluation.</p>
+      <div class="field-grid">${answerGuideFields}</div>
+    </div>
     <div class="inline-actions">
       <button class="btn btn-primary" type="submit">${item ? "Update" : "Add"} Module</button>
       <button class="btn btn-ghost" type="button" id="cancelModuleForm">Cancel</button>
     </div>
   `;
   state.editModuleId = item?.id || null;
+  focusEditPanel(form);
 }
 
 function openRoleForm(item = null) {
@@ -171,6 +219,7 @@ function openRoleForm(item = null) {
     </div>
   `;
   state.editRoleId = item?.id || null;
+  focusEditPanel(form);
 }
 
 function openTemplateForm(item = null) {
@@ -221,6 +270,7 @@ function openTemplateForm(item = null) {
   };
   roleSelect.addEventListener("change", renderWeights);
   renderWeights();
+  focusEditPanel(form);
 }
 
 function rerenderAll() {
@@ -252,6 +302,9 @@ function wireForms() {
       name: String(fd.get("name") || "").trim(),
       questionnaire: questions.join("\n")
     };
+    state.answerGuides[payload.id] = Array.from({ length: 5 }, (_, index) =>
+      String(fd.get(`answerGuide_${index}`) || "").trim()
+    );
     if (state.editModuleId) {
       state.modules = state.modules.map((item) => (item.id === state.editModuleId ? payload : item));
     } else {
@@ -292,6 +345,14 @@ function wireForms() {
       acc[moduleId] = Number(fd.get(`weight_${moduleId}`) || 0);
       return acc;
     }, {});
+    const totalWeight = Object.values(weights).reduce((total, weight) => total + weight, 0);
+    if (totalWeight !== 100) {
+      const difference = Math.abs(totalWeight - 100);
+      const comparison = totalWeight > 100 ? `exceeds 100% by ${difference}%` : `falls short of 100% by ${difference}%`;
+      alert(`Template weights total ${totalWeight}%. The total must be exactly 100%; it ${comparison}.`);
+      form.querySelector("input[name^='weight_']")?.focus();
+      return;
+    }
 
     const payload = {
       id: state.editTemplateId || String(fd.get("id") || "").trim() || uuid("template"),
@@ -361,6 +422,7 @@ function wireGlobalActions() {
       const ok = await confirmAction({ message: "Delete this module?" });
       if (!ok) return;
       state.modules = state.modules.filter((entry) => entry.id !== id);
+      delete state.answerGuides[id];
       state.roles = state.roles.map((role) => ({
         ...role,
         modules: role.modules.filter((moduleId) => moduleId !== id)

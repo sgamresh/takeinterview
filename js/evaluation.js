@@ -24,9 +24,12 @@ const state = {
   modules: [],
   roles: [],
   templates: [],
+  answerGuides: {},
   moduleMap: new Map(),
   editingEvaluationId: null
 };
+
+const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
 
 const els = {
   form: document.getElementById("candidateForm"),
@@ -71,7 +74,12 @@ function renderModulesFromSelection(prefilledModules = []) {
     const moduleData = state.moduleMap.get(moduleId);
     if (!moduleData) return;
     const weight = Number(template.weights?.[moduleId] || 0);
-    const card = createModuleCard(moduleData, weight, prefilledMap.get(moduleId));
+    const card = createModuleCard(
+      moduleData,
+      weight,
+      prefilledMap.get(moduleId),
+      state.answerGuides[moduleId] || []
+    );
     const ratingEl = card.querySelector(".module-rating");
     const ratingOverrideEl = card.querySelector(".module-rating-override");
     const notesEl = card.querySelector(".module-notes");
@@ -221,6 +229,11 @@ function hydrateTemplateOptions(selectedRoleId, selectedTemplateId) {
 
 async function init() {
   const { modules, roles, templates } = await loadAllConfigs();
+  if (localHosts.has(window.location.hostname)) {
+    const response = await fetch("./api/answer-key.php", { cache: "no-store" });
+    if (!response.ok) throw new Error("Failed to load the localhost-only interviewer answer guide.");
+    state.answerGuides = await response.json();
+  }
   state.modules = modules;
   state.roles = roles;
   state.templates = templates;

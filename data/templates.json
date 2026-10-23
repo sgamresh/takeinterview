@@ -130,22 +130,15 @@
     {
         "id": "ott_test_manager_core",
         "roleId": "ott_test_manager",
-        "name": "OTT Test Manager Core",
+        "name": "QA Technical Account Manager (OTT) Core",
         "weights": {
-            "problem_solving": 2,
             "ott_domain_expertise": 14,
-            "streaming_quality_testing": 12,
-            "manual": 7,
-            "automation": 8,
-            "api_testing": 5,
-            "performance_testing": 5,
-            "test_strategy": 12,
-            "delivery_release_management": 9,
-            "defect_management": 4,
-            "quality_metrics": 3,
-            "leadership": 8,
-            "stakeholder_management": 7,
-            "communication": 4
+            "ott_technical_skills": 14,
+            "ott_delivery_project_management": 14,
+            "ott_team_leadership": 14,
+            "ott_quality_assurance": 14,
+            "ott_communication_client_management": 15,
+            "ott_account_sales_delivery": 15
         }
     }
 ]

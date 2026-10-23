@@ -89,22 +89,15 @@
     },
     {
         "id": "ott_test_manager",
-        "name": "OTT Test Manager",
+        "name": "QA Technical Account Manager (OTT)",
         "modules": [
-            "problem_solving",
             "ott_domain_expertise",
-            "streaming_quality_testing",
-            "manual",
-            "automation",
-            "api_testing",
-            "performance_testing",
-            "test_strategy",
-            "delivery_release_management",
-            "defect_management",
-            "quality_metrics",
-            "leadership",
-            "stakeholder_management",
-            "communication"
+            "ott_technical_skills",
+            "ott_delivery_project_management",
+            "ott_team_leadership",
+            "ott_quality_assurance",
+            "ott_communication_client_management",
+            "ott_account_sales_delivery"
         ]
     }
 ]

@@ -10,7 +10,7 @@
   <header class="topbar">
     <div>
       <h1>Admin Configuration Panel</h1>
-      <p class="subtitle">Manage modules, roles, and templates</p>
+      <p class="subtitle">Manage modules, roles, templates, weights, and answer keys</p>
     </div>
     <nav class="nav">
       <a href="./index.html" class="nav-link">Dashboard</a>
@@ -39,7 +39,8 @@
         </div>
         <p class="muted">
           Changes are saved via local PHP endpoint directly into
-          <code>/data/modules.json</code>, <code>/data/roles.json</code>, and <code>/data/templates.json</code>.
+          <code>/data/modules.json</code>, <code>/data/roles.json</code>, <code>/data/templates.json</code>,
+          and the local-only <code>/data/answer-key.local.json</code>.
         </p>
         <p id="fileSyncStatus" class="muted">No unsaved changes.</p>
       </section>

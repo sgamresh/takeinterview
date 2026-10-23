@@ -240,6 +240,62 @@ textarea {
   line-height: 1.45;
 }
 
+.questionnaire-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.answer-info {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--brand);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.answer-info:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.questionnaire-help {
+  position: relative;
+  flex: 0 0 auto;
+  display: inline-flex;
+}
+
+.answer-guide {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 6px);
+  right: 0;
+  width: min(320px, calc(100vw - 48px));
+  padding: 8px 10px;
+  border-left: 3px solid var(--brand);
+  border-radius: 4px;
+  background: var(--brand-soft);
+  color: var(--ink);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 16%);
+}
+
+.questionnaire-help:hover .answer-guide,
+.questionnaire-help:focus-within .answer-guide {
+  display: block;
+}
+
 .questionnaire-options {
   display: flex;
   justify-content: flex-end;
@@ -412,6 +468,12 @@ textarea {
   border: 1px dashed #aec0af;
   border-radius: 10px;
   padding: 12px;
+  scroll-margin-top: 16px;
+}
+
+.answer-key-editor {
+  display: grid;
+  gap: 10px;
 }
 
 .inline-actions {

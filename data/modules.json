@@ -101,17 +101,37 @@
     },
     {
         "id": "ott_domain_expertise",
-        "name": "OTT and Media Workflow Expertise",
-        "questionnaire": "Describe the end-to-end path from content ingestion and metadata preparation to subscriber playback.\nHow do encoding, packaging, DRM, and CDN delivery interact in an OTT platform?\nWhat are the key workflow differences between live and video-on-demand content?\nHow would you test subscription entitlements, regional rights, and ad-supported access?\nWhich media workflow failures would you prioritize for investigation before a major launch?"
+        "name": "Domain Expertise",
+        "questionnaire": "What are the main components of an OTT platform, from content ingestion to subscriber playback?\nHow do streaming technologies such as encoding, packaging, DRM, and CDN delivery work together?\nHow do media workflows differ for live streaming and video on demand?\nHow would you test that media workflows preserve content metadata and availability from ingestion through playback?\nDescribe an OTT or streaming workflow issue you investigated and how you helped resolve it."
     },
     {
-        "id": "streaming_quality_testing",
-        "name": "Streaming Quality and Compatibility Testing",
-        "questionnaire": "Which QoE measures would you use to assess playback startup, rebuffering, and fatal errors?\nHow would you verify adaptive bitrate behavior as bandwidth and network stability change?\nHow would you test live-stream latency, synchronization, and recovery across supported devices?\nWhat device, browser, DRM, and network combinations belong in a risk-based compatibility plan?\nHow do you combine device-lab results and production telemetry to identify streaming quality gaps?"
+        "id": "ott_technical_skills",
+        "name": "Technical Skills",
+        "questionnaire": "How do you combine manual and exploratory testing with automation for an OTT product?\nWhich automation tools or frameworks have you used, and how did you choose them for the testing need?\nHow would you test streaming playback across devices, browsers, and network conditions?\nHow do you design maintainable automated regression tests for core OTT user journeys?\nDescribe how you use test results, logs, or other diagnostics to investigate a technical issue."
     },
     {
-        "id": "delivery_release_management",
-        "name": "Project and Release Management",
-        "questionnaire": "How do you build a delivery plan for OTT testing across multiple teams and release milestones?\nHow do you forecast tester, device-lab, and automation capacity against overlapping projects?\nWhich readiness checks and dependencies must be confirmed before a production release?\nHow would you manage a release plan when a critical defect or external vendor delay changes the schedule?\nWhat evidence and stakeholder alignment do you require for a go/no-go recommendation?"
+        "id": "ott_delivery_project_management",
+        "name": "Delivery & Project Management",
+        "questionnaire": "How do you plan and track testing work across project milestones and dependencies?\nHow do you coordinate execution when multiple teams or vendors contribute to a delivery?\nWhat release readiness evidence do you gather before making a go/no-go recommendation?\nHow do you manage a delivery plan when a critical defect or dependency threatens the schedule?\nHow do you keep stakeholders aligned on progress, risks, and release decisions?"
+    },
+    {
+        "id": "ott_team_leadership",
+        "name": "Team Leadership",
+        "questionnaire": "How do you manage a QA team with varied experience and responsibilities?\nHow do you plan team capacity and allocate resources across competing delivery needs?\nDescribe how you mentor a team member to grow their testing or leadership skills.\nHow do you address gaps in team capacity or capability during a high-priority release?\nHow do you build accountability and quality ownership across a team?"
+    },
+    {
+        "id": "ott_quality_assurance",
+        "name": "Quality Assurance",
+        "questionnaire": "How do you develop a test strategy that reflects product scope and delivery risks?\nHow do you identify, prioritize, and communicate quality risks?\nHow do you manage defect triage, severity, ownership, and verification through resolution?\nWhich quality measures do you use to assess readiness and communicate testing outcomes?\nDescribe a process improvement you introduced and how you assessed its impact."
+    },
+    {
+        "id": "ott_communication_client_management",
+        "name": "Communication & Client Management",
+        "questionnaire": "How do you manage client interactions and align expectations on quality and delivery?\nHow do you prepare clear, useful status and quality reports for clients and stakeholders?\nHow do you handle an escalation when a client is affected by a release or service issue?\nHow do you establish and communicate ownership, actions, and timelines across teams?\nDescribe a difficult client conversation and how you reached a clear outcome."
+    },
+    {
+        "id": "ott_account_sales_delivery",
+        "name": "OTT Account Management, Sales & Delivery",
+        "questionnaire": "How do you build trusted relationships with OTT clients and understand their technical and business priorities?\nHow do you identify account-mining opportunities, such as additional services or platform capabilities that address a client's needs?\nHow do you partner with sales teams to qualify opportunities, shape proposals, and set realistic delivery expectations?\nHow do you translate a client opportunity into a technical plan with clear scope, resources, risks, and milestones?\nHow do you maintain account ownership from opportunity handoff through delivery, adoption, and follow-up?"
     }
 ]

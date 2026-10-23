@@ -12,7 +12,7 @@ export function ratingFromQuestionnaire(responses) {
   return 1 + Math.round((trueCount / answered.length) * 4);
 }
 
-export function createModuleCard(module, weight = 0, initial = {}) {
+export function createModuleCard(module, weight = 0, initial = {}, answerGuides = []) {
   const card = document.createElement("article");
   card.className = "module-card";
   card.dataset.moduleId = module.id;
@@ -39,7 +39,17 @@ export function createModuleCard(module, weight = 0, initial = {}) {
             (question, index) => `
               <li>
                 <div class="questionnaire-item" role="group" aria-label="${escapeHtml(question)}">
-                  <span class="questionnaire-prompt">${escapeHtml(question)}</span>
+                  <div class="questionnaire-heading">
+                    <span class="questionnaire-prompt">${escapeHtml(question)}</span>
+                    ${
+                      answerGuides[index]
+                        ? `<span class="questionnaire-help">
+                             <button class="answer-info" type="button" aria-label="Strong-answer guidance">i</button>
+                             <span class="answer-guide" role="tooltip"><strong>Strong answer indicators:</strong> ${escapeHtml(answerGuides[index])}</span>
+                           </span>`
+                        : ""
+                    }
+                  </div>
                   <div class="questionnaire-options">
                     ${[
                       ["true", "Y", "True"],
