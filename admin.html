@@ -10,7 +10,7 @@
   <header class="topbar">
     <div>
       <h1>Admin Configuration Panel</h1>
-      <p class="subtitle">Manage modules, roles, templates, weights, and answer keys</p>
+      <p class="subtitle">Manage evaluation skillsets and questionnaire items</p>
     </div>
     <nav class="nav">
       <a href="./index.html" class="nav-link">Dashboard</a>
@@ -38,9 +38,7 @@
           </div>
         </div>
         <p class="muted">
-          Changes are saved via local PHP endpoint directly into
-          <code>/data/modules.json</code>, <code>/data/roles.json</code>, <code>/data/templates.json</code>,
-          and the local-only <code>/data/answer-key.local.json</code>.
+          Changes are saved via the local PHP endpoint directly into <code>/data/modules.json</code>.
         </p>
         <p id="fileSyncStatus" class="muted">No unsaved changes.</p>
       </section>
@@ -72,60 +70,6 @@
         </div>
       </section>
 
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Manage Roles</h2>
-          <div class="row gap">
-            <button id="newRoleBtn" class="btn btn-secondary">New Role</button>
-            <label class="btn btn-ghost file-label">
-              Import Roles JSON
-              <input id="importRoles" type="file" accept="application/json" hidden />
-            </label>
-          </div>
-        </div>
-        <form id="roleForm" class="inline-form hidden"></form>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Modules</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="roleRows"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head">
-          <h2>Manage Templates</h2>
-          <div class="row gap">
-            <button id="newTemplateBtn" class="btn btn-secondary">New Template</button>
-            <label class="btn btn-ghost file-label">
-              Import Templates JSON
-              <input id="importTemplates" type="file" accept="application/json" hidden />
-            </label>
-          </div>
-        </div>
-        <form id="templateForm" class="inline-form hidden"></form>
-        <div class="table-wrap">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Role</th>
-                <th>Weights</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="templateRows"></tbody>
-          </table>
-        </div>
-      </section>
     </section>
   </main>
 

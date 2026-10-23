@@ -82,9 +82,9 @@ Search result pages were reviewed on the observation date. These links surface m
 
 ## Catalog Mapping
 
-The catalogs separate role competencies from product/tool choices. Existing role, module, and SDET template IDs were retained where possible for saved drafts and re-evaluations. New roles are included for API, mobile, and performance testing because the reviewed listings show distinct assessment needs. The generic rating scale remains unchanged; questionnaire items are prompts, not anchored 1-5 behavioral criteria.
+The skillset catalog separates role competencies from product/tool choices. Roles are entered per evaluation, and interviewers choose the skillsets relevant to the position. The generic rating scale remains unchanged; questionnaire items are prompts, not anchored 1-5 behavioral criteria.
 
-Template weights sum to 100 and every module listed for a role has a positive weight. Modules with only NA responses are excluded from the weighted score, and the remaining weights are normalized for the final percentage. The templates are starting points and should be adjusted to the employer's product domain and job description.
+Selected skillsets start with equal whole-number weights totaling 100%; interviewers can adjust them as long as their total remains 100%. Skillsets without ratings are excluded from the score, and the remaining weights are normalized for the final percentage. OTT expertise skillsets include the corresponding competencies as bullet-point prompts.
 
 ## Technical References
 

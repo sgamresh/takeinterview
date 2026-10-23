@@ -1,18 +1,37 @@
 import { barClass, escapeHtml, ratingClass } from "../js/ui.js";
 
 function starsFromRating(rating) {
-  const value = Number(rating) || 0;
+  const value = Math.round(Number(rating) || 0);
   return `${"★".repeat(value)}${"☆".repeat(5 - value)}`;
 }
 
-export function ratingFromQuestionnaire(responses) {
-  const answered = responses.filter((response) => response === "true" || response === "false");
-  if (!answered.length) return 0;
-  const trueCount = answered.filter((response) => response === "true").length;
-  return 1 + Math.round((trueCount / answered.length) * 4);
+function starRatingMarkup(rating, group, disabled = false) {
+  const selectedRating = Number(rating) || 0;
+  return `
+    <div class="star-rating${disabled ? " is-disabled" : ""}" data-rating="${selectedRating}" role="group" aria-label="${group}">
+      ${[1, 2, 3, 4, 5]
+        .map(
+          (value) => `
+            <button class="star-rating-button${value <= selectedRating ? " is-selected" : ""}" type="button"
+              data-rating="${value}" aria-label="${value} out of 5 stars"
+              title="${value} - ${["", "Weak", "Basic", "Average", "Strong", "Excellent"][value]}"
+              aria-pressed="${value === selectedRating}" ${disabled ? "disabled" : ""}>★</button>
+          `
+        )
+        .join("")}
+    </div>
+  `;
 }
 
-export function createModuleCard(module, weight = 0, initial = {}, answerGuides = []) {
+export function ratingFromQuestionnaire(ratings) {
+  const rated = ratings
+    .map(Number)
+    .filter((rating) => Number.isFinite(rating) && rating >= 1 && rating <= 5);
+  if (!rated.length) return 0;
+  return rated.reduce((sum, rating) => sum + rating, 0) / rated.length;
+}
+
+export function createModuleCard(module, weight = 0, initial = {}) {
   const card = document.createElement("article");
   card.className = "module-card";
   card.dataset.moduleId = module.id;
@@ -20,10 +39,10 @@ export function createModuleCard(module, weight = 0, initial = {}, answerGuides 
     .split(/\r?\n/)
     .map((question) => question.trim())
     .filter(Boolean);
-  const responses = Array.isArray(initial.questionnaireResponses)
-    ? initial.questionnaireResponses
+  const questionRatings = Array.isArray(initial.questionRatings)
+    ? initial.questionRatings
     : Array.isArray(initial.questionnaireAnswers)
-      ? initial.questionnaireAnswers.map((answer) => answer.answer)
+      ? initial.questionnaireAnswers.map((answer) => answer.rating ?? "")
       : [];
   const ratingOverride =
     typeof initial.ratingOverride === "boolean"
@@ -33,7 +52,7 @@ export function createModuleCard(module, weight = 0, initial = {}, answerGuides 
   card.innerHTML = `
     <div>
       <h3>${escapeHtml(module.name)}</h3>
-      <ol class="module-questions">
+      <ul class="module-questions">
         ${questions
           .map(
             (question, index) => `
@@ -41,58 +60,34 @@ export function createModuleCard(module, weight = 0, initial = {}, answerGuides 
                 <div class="questionnaire-item" role="group" aria-label="${escapeHtml(question)}">
                   <div class="questionnaire-heading">
                     <span class="questionnaire-prompt">${escapeHtml(question)}</span>
-                    ${
-                      answerGuides[index]
-                        ? `<span class="questionnaire-help">
-                             <button class="answer-info" type="button" aria-label="Strong-answer guidance">i</button>
-                             <span class="answer-guide" role="tooltip"><strong>Strong answer indicators:</strong> ${escapeHtml(answerGuides[index])}</span>
-                           </span>`
-                        : ""
-                    }
                   </div>
-                  <div class="questionnaire-options">
-                    ${[
-                      ["true", "Y", "True"],
-                      ["false", "N", "False"],
-                      ["na", "NA", "Not applicable"]
-                    ]
-                      .map(
-                        ([value, label, description]) => `
-                          <label class="questionnaire-choice" title="${description}" aria-label="${description}">
-                            <input type="radio" name="question_${escapeHtml(module.id)}_${index}" value="${value}" ${
-                              (responses[index] || "na") === value ? "checked" : ""
-                            } />
-                            <span>${label}</span>
-                          </label>
-                        `
-                      )
-                      .join("")}
+                  <div class="question-rating-control">
+                    <span class="muted">Question rating</span>
+                    ${starRatingMarkup(questionRatings[index], `Rating for ${question}`)}
                   </div>
                 </div>
               </li>
             `
           )
           .join("")}
-      </ol>
+      </ul>
     </div>
     <div class="field">
-      <span>Weight: <strong>${Number(weight)}%</strong></span>
+      <label class="field">
+        <span>Skillset weight (%)</span>
+        <input class="input module-weight" type="number" min="0" max="100" step="1" required value="${Math.round(Number(weight))}" />
+      </label>
       <label class="rating-override">
         <input type="checkbox" class="module-rating-override" ${ratingOverride ? "checked" : ""} />
-        <span>Override questionnaire rating</span>
+        <span>Override calculated rating</span>
       </label>
       <label class="field">
-        <span>Rating</span>
-        <select class="input module-rating" ${ratingOverride ? "" : "disabled"}>
-          <option value="">No rating (all items are NA)</option>
-          <option value="1">1 - Weak</option>
-          <option value="2">2 - Basic</option>
-          <option value="3">3 - Average</option>
-          <option value="4">4 - Strong</option>
-          <option value="5">5 - Excellent</option>
-        </select>
+        <span>Overall rating override</span>
+        ${starRatingMarkup(ratingOverride ? initial.rating : 0, `Overall rating for ${module.name}`, !ratingOverride)}
       </label>
+      <span class="module-rating" hidden></span>
       <span class="rating-text muted">☆☆☆☆☆</span>
+      <span class="rating-value muted"></span>
       <span class="muted rating-source"></span>
     </div>
     <div class="progress"><span class="bar-low"></span></div>
@@ -104,64 +99,76 @@ export function createModuleCard(module, weight = 0, initial = {}, answerGuides 
   `;
 
   const ratingEl = card.querySelector(".module-rating");
-  const responsesNow = [...card.querySelectorAll(".questionnaire-item")].map(
-    (item) => item.querySelector("input:checked")?.value || "na"
-  );
-  const calculatedRating = ratingFromQuestionnaire(responsesNow);
+  const calculatedRating = ratingFromQuestionnaire(questionRatings);
   const initialRating = ratingOverride ? Number(initial.rating || 0) : calculatedRating;
-  if (initialRating) ratingEl.value = String(initialRating);
+  ratingEl.textContent = initialRating ? String(initialRating) : "";
   const notesEl = card.querySelector(".module-notes");
   if (initial.notes) notesEl.value = initial.notes;
-  updateModuleVisuals(card, weight);
+  updateModuleVisuals(card);
   return card;
 }
 
-export function updateModuleVisuals(card, weight) {
+export function updateModuleVisuals(card) {
   const ratingEl = card.querySelector(".module-rating");
   const ratingOverride = card.querySelector(".module-rating-override").checked;
-  ratingEl.disabled = !ratingOverride;
-  if (!ratingOverride) {
-    const responses = [...card.querySelectorAll(".questionnaire-item")].map(
-      (item) => item.querySelector("input:checked")?.value || "na"
-    );
-    const calculatedRating = ratingFromQuestionnaire(responses);
-    ratingEl.value = calculatedRating ? String(calculatedRating) : "";
-  }
-  const ratingValue = Number(ratingEl.value || 0);
+  const overallStars = card.querySelector(".star-rating[aria-label^='Overall rating']");
+  overallStars.classList.toggle("is-disabled", !ratingOverride);
+  const overrideRating = ratingOverride ? Number(overallStars.dataset.rating) || 0 : 0;
+  overallStars.querySelectorAll("button").forEach((button) => {
+    const selected = Number(button.dataset.rating) <= overrideRating;
+    button.disabled = !ratingOverride;
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", String(Number(button.dataset.rating) === overrideRating));
+  });
+  const questionRatings = [...card.querySelectorAll(".question-rating-control .star-rating")]
+    .map((control) => Number(control.dataset.rating))
+    .filter(Boolean);
+  const calculatedRating = ratingFromQuestionnaire(questionRatings);
+  const ratingValue = ratingOverride ? overrideRating : calculatedRating;
+  const weightInput = card.querySelector(".module-weight");
+  const currentWeight = weightInput.value === "" ? 0 : Number(weightInput.value);
+  ratingEl.textContent = ratingValue ? String(ratingValue) : "";
   const starsEl = card.querySelector(".rating-text");
+  const ratingValueEl = card.querySelector(".rating-value");
   const barEl = card.querySelector(".progress > span");
   const scoreEl = card.querySelector(".module-score");
   const sourceEl = card.querySelector(".rating-source");
   const ratio = (ratingValue / 5) * 100;
 
   starsEl.textContent = starsFromRating(ratingValue);
-  starsEl.className = `rating-text ${ratingValue ? ratingClass(ratingValue) : "muted"}`;
+  starsEl.className = `rating-text ${ratingValue ? ratingClass(Math.round(ratingValue)) : "muted"}`;
+  ratingValueEl.textContent = ratingValue ? `${ratingValue.toFixed(2)}/5` : "";
+  ratingValueEl.className = `rating-value ${ratingValue ? ratingClass(Math.round(ratingValue)) : "muted"}`;
   barEl.style.width = `${ratio}%`;
-  barEl.className = barClass(ratingValue || 1);
+  barEl.className = barClass(Math.round(ratingValue) || 1);
   sourceEl.textContent = ratingOverride
     ? "Manual rating override"
     : ratingValue
-      ? "Calculated from True/False answers; NA excluded"
-      : "Not rated; all items are NA";
+      ? "Average of individual question ratings"
+      : "Not rated; rate at least one question or use the override";
   scoreEl.textContent = ratingValue
-    ? `Weighted score: ${(ratingValue * Number(weight || 0)).toFixed(2)}`
-    : "Excluded from score (all items are NA)";
+    ? `Weighted score: ${(ratingValue * currentWeight).toFixed(2)}`
+    : "Excluded from score (no question ratings)";
 }
 
 export function readModuleInputs(container) {
   return [...container.querySelectorAll(".module-card")].map((card) => {
-    const questionnaireResponses = [...card.querySelectorAll(".questionnaire-item")].map(
-      (item) => item.querySelector("input:checked")?.value || "na"
-    );
     const ratingOverride = card.querySelector(".module-rating-override").checked;
-    const calculatedRating = ratingFromQuestionnaire(questionnaireResponses);
+    const overallStars = card.querySelector(".star-rating[aria-label^='Overall rating']");
+    const questionRatings = [...card.querySelectorAll(".question-rating-control .star-rating")].map(
+      (control) => Number(control.dataset.rating) || null
+    );
+    const calculatedRating = ratingFromQuestionnaire(questionRatings.filter(Boolean));
+    const weightInput = card.querySelector(".module-weight");
     return {
       moduleId: card.dataset.moduleId,
       rating: ratingOverride
-        ? Number(card.querySelector(".module-rating").value || 0)
+        ? Number(overallStars.dataset.rating || 0)
         : calculatedRating,
       ratingOverride,
-      questionnaireResponses,
+      questionRatings,
+      weight: weightInput.value === "" ? 0 : Number(weightInput.value),
+      weightValid: weightInput.validity.valid,
       notes: String(card.querySelector(".module-notes").value || "").trim()
     };
   });
@@ -176,7 +183,7 @@ export function validateModuleInputs(modules, moduleMap) {
     }
   });
   if (!modules.some((item) => item.rating)) {
-    errors.push("Answer at least one questionnaire item or set a manual rating override.");
+    errors.push("Rate at least one questionnaire item or set a manual rating override.");
   }
   return errors;
 }

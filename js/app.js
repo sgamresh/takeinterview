@@ -45,7 +45,7 @@ function initIndex() {
     : "No draft evaluation saved.";
   resumeDraftBtn.disabled = !draft;
   resumeDraftBtn.addEventListener("click", () => {
-    window.location.href = "./evaluate.html";
+    window.location.href = "./evaluate.html?draft=1";
   });
 
   function renderRows(list) {
@@ -88,8 +88,7 @@ function initIndex() {
         entry.candidate?.fullName,
         entry.candidate?.email,
         entry.candidate?.companyName,
-        entry.roleName,
-        entry.templateName
+        entry.roleName
       ]
         .filter(Boolean)
         .join(" ")
@@ -188,8 +187,7 @@ function initIndex() {
             interviewDate:
               result.candidateSeed.interviewDate || new Date().toISOString().slice(0, 10)
           },
-          roleId: result.candidateSeed.roleId || "",
-          templateId: result.candidateSeed.templateId || "",
+          roleId: result.candidateSeed.roleName || result.candidateSeed.roleId || "",
           moduleInputs: [],
           savedAt: new Date().toISOString()
         };
@@ -268,14 +266,14 @@ function renderComparison(a, b) {
         <div>${
           left
             ? left.rating
-              ? `${left.rating}/5${left.ratingOverride ? " (manual override)" : ""} (${left.score.toFixed(1)})`
+              ? `${Number(left.rating).toFixed(2)}/5${left.ratingOverride ? " (manual override)" : ""} (${left.score.toFixed(1)})`
               : "N/A (excluded)"
             : "-"
         }</div>
         <div>${
           right
             ? right.rating
-              ? `${right.rating}/5${right.ratingOverride ? " (manual override)" : ""} (${right.score.toFixed(1)})`
+              ? `${Number(right.rating).toFixed(2)}/5${right.ratingOverride ? " (manual override)" : ""} (${right.score.toFixed(1)})`
               : "N/A (excluded)"
             : "-"
         }</div>
@@ -320,9 +318,8 @@ function initReport() {
         <p class="muted">Company: ${escapeHtml(target.candidate.companyName || "-")}</p>
       </div>
       <div class="summary-card">
-        <p class="muted">Role & Template</p>
+        <p class="muted">Role Applied</p>
         <p class="large">${escapeHtml(target.roleName)}</p>
-        <p>${escapeHtml(target.templateName)}</p>
       </div>
       <div class="summary-card">
         <p class="muted">Final Score</p>
@@ -336,7 +333,7 @@ function initReport() {
         <thead>
           <tr>
             <th>Module</th>
-            <th>Questionnaire Responses</th>
+            <th>Questions and Individual Ratings</th>
             <th>Rating</th>
             <th>Weight</th>
             <th>Score</th>
@@ -347,7 +344,7 @@ function initReport() {
           ${target.modules
             .map((item) => {
               const applicableAnswers = Array.isArray(item.questionnaireAnswers)
-                ? item.questionnaireAnswers.filter((answer) => answer.answer !== "na")
+                ? item.questionnaireAnswers.filter((answer) => answer.rating)
                 : [];
               return `
               <tr>
@@ -358,16 +355,14 @@ function initReport() {
                       ? `<ol class="report-questions">${applicableAnswers
                           .map(
                             (answer) =>
-                              `<li><span class="question-response-text ${
-                                answer.answer === "true" ? "positive" : "negative"
-                              }">${escapeHtml(answer.question)}</span></li>`
+                              `<li>${escapeHtml(answer.question)} <span class="muted">Rating: ${escapeHtml(answer.rating)}/5</span></li>`
                           )
                           .join("")}</ol>`
                       : "-"
                   }
                 </td>
-                <td>${item.rating ? `${item.rating}/5` : "Not rated"}</td>
-                <td>${item.rating ? `${item.weight}%` : "N/A (excluded)"}</td>
+                <td>${item.rating ? `${Number(item.rating).toFixed(2)}/5` : "Not rated"}</td>
+                <td>${item.rating ? `${Math.round(Number(item.weight))}%` : "N/A (excluded)"}</td>
                 <td>${Number(item.score || 0).toFixed(2)}${item.rating ? "" : " (excluded)"}</td>
                 <td>${escapeHtml(item.notes || "-")}</td>
               </tr>

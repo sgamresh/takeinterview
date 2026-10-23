@@ -1,7 +1,5 @@
 const STORAGE_KEYS = {
   modules: "iee_config_modules",
-  roles: "iee_config_roles",
-  templates: "iee_config_templates",
   evaluations: "iee_evaluations",
   draft: "iee_draft",
   importPayload: "iee_import_payload"
@@ -42,12 +40,8 @@ export function normalizeModules(modules) {
 }
 
 export async function loadAllConfigs() {
-  const [modules, roles, templates] = await Promise.all([
-    loadConfig("modules"),
-    loadConfig("roles"),
-    loadConfig("templates")
-  ]);
-  return { modules, roles, templates };
+  const modules = await loadConfig("modules");
+  return { modules };
 }
 
 export function saveConfig(type, value) {
@@ -102,7 +96,7 @@ export function findDuplicateEvaluation({ email, roleId, companyName, excludeId 
       if (excludeId && item.id === excludeId) return false;
       return (
         normalizeKeyText(item.candidate?.email) === nEmail &&
-        normalizeKeyText(item.roleId) === nRole &&
+        (normalizeKeyText(item.roleName) === nRole || normalizeKeyText(item.roleId) === nRole) &&
         normalizeKeyText(item.candidate?.companyName) === nCompany
       );
     }) || null
@@ -129,8 +123,7 @@ export function searchEvaluations(query) {
       entry.candidate?.fullName,
       entry.candidate?.email,
       entry.candidate?.companyName,
-      entry.roleName,
-      entry.templateName
+      entry.roleName
     ]
       .filter(Boolean)
       .join(" ")
@@ -188,13 +181,14 @@ export function cloneEvaluationPayload(id) {
       ...source.candidate,
       interviewDate: new Date().toISOString().slice(0, 10)
     },
-    roleId: source.roleId,
-    templateId: source.templateId,
+    roleId: source.roleName || source.roleId || "",
+    selectedModuleIds: source.modules.map((item) => item.id),
     moduleInputs: source.modules.map((item) => ({
       moduleId: item.id,
       rating: item.rating,
       ratingOverride: item.ratingOverride,
-      questionnaireResponses: item.questionnaireResponses,
+      weight: item.weight,
+      questionRatings: item.questionRatings || item.questionnaireAnswers?.map((answer) => answer.rating ?? "") || [],
       questionnaireAnswers: item.questionnaireAnswers,
       notes: item.notes
     }))
@@ -212,13 +206,14 @@ function toDraftFromEvaluation(evaluation) {
       ...evaluation.candidate,
       interviewDate: new Date().toISOString().slice(0, 10)
     },
-    roleId: evaluation.roleId || "",
-    templateId: evaluation.templateId || "",
+    roleId: evaluation.roleName || evaluation.roleId || "",
+    selectedModuleIds: (evaluation.modules || []).map((item) => item.id),
     moduleInputs: (evaluation.modules || []).map((item) => ({
       moduleId: item.id,
       rating: Number(item.rating || 0),
       ratingOverride: item.ratingOverride,
-      questionnaireResponses: item.questionnaireResponses,
+      weight: item.weight,
+      questionRatings: item.questionRatings || item.questionnaireAnswers?.map((answer) => answer.rating ?? "") || [],
       questionnaireAnswers: item.questionnaireAnswers,
       notes: String(item.notes || "")
     })),

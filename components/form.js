@@ -1,10 +1,6 @@
 import { escapeHtml } from "../js/ui.js";
 
-export function renderCandidateForm(target, roles, initial = {}) {
-  const roleOptions = roles
-    .map((role) => `<option value="${escapeHtml(role.id)}">${escapeHtml(role.name)}</option>`)
-    .join("");
-
+export function renderCandidateForm(target, initial = {}) {
   target.innerHTML = `
     <div class="field-grid">
       <label class="field">
@@ -29,20 +25,11 @@ export function renderCandidateForm(target, roles, initial = {}) {
       </label>
       <label class="field">
         <span>Role Applied *</span>
-        <select id="roleId" name="roleId" class="input" required>
-          <option value="">Select role</option>
-          ${roleOptions}
-        </select>
+        <input id="roleId" name="roleId" class="input" required value="${escapeHtml(initial.roleId || "")}" />
       </label>
       <label class="field">
         <span>Interview Date *</span>
         <input id="interviewDate" name="interviewDate" type="date" class="input" required value="${escapeHtml(initial.interviewDate || "")}" />
-      </label>
-      <label class="field">
-        <span>Template *</span>
-        <select id="templateId" name="templateId" class="input" required>
-          <option value="">Select template</option>
-        </select>
       </label>
     </div>
     <ul id="candidateErrors" class="error-list hidden"></ul>
@@ -58,8 +45,7 @@ export function readCandidateForm(form) {
     companyName: String(data.companyName || "").trim(),
     experience: String(data.experience || "").trim(),
     roleId: String(data.roleId || "").trim(),
-    interviewDate: String(data.interviewDate || "").trim(),
-    templateId: String(data.templateId || "").trim()
+    interviewDate: String(data.interviewDate || "").trim()
   };
 }
 
@@ -72,7 +58,6 @@ export function validateCandidate(candidate) {
   if (!candidate.experience) errors.push("Years of Experience is required.");
   if (!candidate.roleId) errors.push("Role Applied is required.");
   if (!candidate.interviewDate) errors.push("Interview Date is required.");
-  if (!candidate.templateId) errors.push("Template selection is required.");
   return errors;
 }
 

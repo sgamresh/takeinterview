@@ -24,9 +24,7 @@ if ($baseDir === false) {
 }
 
 $files = [
-  'modules' => $baseDir . DIRECTORY_SEPARATOR . 'modules.json',
-  'roles' => $baseDir . DIRECTORY_SEPARATOR . 'roles.json',
-  'templates' => $baseDir . DIRECTORY_SEPARATOR . 'templates.json'
+  'modules' => $baseDir . DIRECTORY_SEPARATOR . 'modules.json'
 ];
 
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -60,10 +58,8 @@ if ($method === 'POST') {
     respond(400, ['ok' => false, 'error' => 'Body must be valid JSON object']);
   }
 
-  foreach (['modules', 'roles', 'templates'] as $key) {
-    if (!array_key_exists($key, $payload) || !is_array($payload[$key])) {
-      respond(400, ['ok' => false, 'error' => "Missing or invalid array: {$key}"]);
-    }
+  if (!array_key_exists('modules', $payload) || !is_array($payload['modules'])) {
+    respond(400, ['ok' => false, 'error' => 'Missing or invalid array: modules']);
   }
 
   foreach ($files as $key => $path) {
